@@ -6,13 +6,12 @@ from sqlalchemy.pool import StaticPool
 from app.core.db import Base, get_db
 from app.main import app
 
-
 # Test DB Setup
 SQLALCHEMY_DATABASE_URL = "sqlite://"
 engine = create_engine(
   SQLALCHEMY_DATABASE_URL,
   connect_args={"check_same_thread": False},
-  poolclass=StaticPool
+  poolclass=StaticPool,
 )
 TestingSessionLocal = sessionmaker(bind=engine, autoflush=False)
 

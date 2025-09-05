@@ -2,6 +2,8 @@ from pydantic import BaseModel, ConfigDict
 
 
 class CourseTemplateBase(BaseModel):
+  """Test Description"""
+
   name: str
   elective: bool
 
