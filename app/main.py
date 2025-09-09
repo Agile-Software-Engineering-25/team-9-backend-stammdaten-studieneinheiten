@@ -7,6 +7,9 @@ from app.core.db import Base, engine
 from app.models import course_template
 from app.models import course
 
+from app.models import module_templates
+Base.metadata.drop_all(bind=engine)
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="team-9-backend-service")
