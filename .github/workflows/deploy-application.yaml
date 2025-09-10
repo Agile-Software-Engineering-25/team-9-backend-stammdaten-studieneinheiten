@@ -41,10 +41,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v5
 
+      - name: List files in repo
+        run: ls -R
+
       - name: Upload image
         uses: Agile-Software-Engineering-25/build-and-publish-image@v1
         with:
-          context: ./team-9-backend-stammdaten-studieneinheiten
           push: true
 
       - name: Deploy to Namespace
