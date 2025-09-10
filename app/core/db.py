@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, Integer, Column
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
+from sqlalchemy.orm import sessionmaker, DeclarativeBase, mapped_column, Mapped
 import os
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./local.db")
@@ -19,7 +19,9 @@ class Base(DeclarativeBase):
 
 
 class BaseIdMixin:
-  id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+  id: Mapped[int] = mapped_column(
+    Integer, primary_key=True, index=True, autoincrement=True
+  )
 
 
 def get_db():
