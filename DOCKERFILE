@@ -2,6 +2,11 @@ FROM python:3.12-slim
 
 WORKDIR /app
 COPY pyproject.toml uv.lock* ./
+
+ARG PIP_PROXY
+RUN if [ -n "$PIP_PROXY" ]; then \
+      pip config --user set global.proxy "$PIP_PROXY"; \
+    fi
 RUN pip install .
 
 COPY ./app ./app
