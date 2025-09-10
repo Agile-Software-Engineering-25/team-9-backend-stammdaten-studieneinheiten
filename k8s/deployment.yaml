@@ -17,6 +17,13 @@ spec:
       containers:
         - name: stammdaten-studieneinheiten
           image: ghcr.io/agile-software-engineering-25/team-9-backend-stammdaten-studieneinheiten:latest
+          command: ["uvicorn"]
+          args: [
+            "app.main:app",
+            "--host", "0.0.0.0",
+            "--port", "8080",
+            "--root-path", "/masterdata/studies/"
+          ]
           ports:
             - containerPort: 8080
           resources:
