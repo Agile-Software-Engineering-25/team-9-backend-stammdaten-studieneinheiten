@@ -4,9 +4,12 @@ from app.core.db import Base, BaseIdMixin
 from app.models.association_tables import course_template_in_modules_table
 
 
-
 class ModuleTemplate(Base, BaseIdMixin):
   __tablename__ = "ModuleTemplates"
 
   name = Column(String, nullable=False)
-  course_templates = relationship("CourseTemplate", secondary=course_template_in_modules_table, back_populates="module_templates")
+  course_templates = relationship(
+    "CourseTemplate",
+    secondary=course_template_in_modules_table,
+    back_populates="module_templates",
+  )

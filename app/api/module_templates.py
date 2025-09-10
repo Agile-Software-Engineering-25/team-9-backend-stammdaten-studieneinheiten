@@ -1,7 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.db import get_db
-from app.schemas.module_templates import ModuleTemplateCreate, ModuleTemplateRead
+from app.schemas.module_templates import (
+  ModuleTemplateCreate,
+  ModuleTemplateRead,
+)
 from app.services import module_template_service
 
 router = APIRouter(prefix="/modules/templates", tags=["modules"])
@@ -21,5 +24,7 @@ def get_module_templates(mod_temp_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=ModuleTemplateRead)
-def create_module_templates(module_template: ModuleTemplateCreate, db: Session = Depends(get_db)):
+def create_module_templates(
+  module_template: ModuleTemplateCreate, db: Session = Depends(get_db)
+):
   return module_template_service.create_module_template(db, module_template)

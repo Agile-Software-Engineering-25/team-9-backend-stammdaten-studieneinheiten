@@ -13,30 +13,38 @@ from fastapi import HTTPException
 
 
 def list_module_template(db: Session):
-    return module_template_crud.get_all(db)
+  return module_template_crud.get_all(db)
 
 
 def get_module_template(db: Session, template_id: int):
-    return module_template_crud.get(db, template_id)
+  return module_template_crud.get(db, template_id)
 
 
 def create_module_template(db: Session, payload: ModuleTemplateCreate):
-    # enforce “at least one” if desired
-    if not payload.course_template_ids:
-        raise HTTPException(status_code=400, detail="At least one course_template_id is required")
+  # enforce “at least one” if desired
+  if not payload.course_template_ids:
+    raise HTTPException(
+      status_code=400, detail="At least one course_template_id is required"
+    )
 
-    # fetch the CourseTemplate rows
-    stmt = select(CourseTemplate).where(CourseTemplate.id.in_(payload.course_template_ids))
-    course_templates = list(db.scalars(stmt))
+  # fetch the CourseTemplate rows
+  stmt = select(CourseTemplate).where(
+    CourseTemplate.id.in_(payload.course_template_ids)
+  )
+  course_templates = list(db.scalars(stmt))
 
-    # optional: ensure all IDs existed
-    if len(course_templates) != len(set(payload.course_template_ids)):
-        missing = set(payload.course_template_ids) - {ct.id for ct in course_templates}
-        raise HTTPException(status_code=400, detail=f"Unknown course_template_ids: {sorted(missing)}")
+  # optional: ensure all IDs existed
+  if len(course_templates) != len(set(payload.course_template_ids)):
+    missing = set(payload.course_template_ids) - {
+      ct.id for ct in course_templates
+    }
+    raise HTTPException(
+      status_code=400, detail=f"Unknown course_template_ids: {sorted(missing)}"
+    )
 
-    # create and attach relationship
-    obj = ModuleTemplate(name=payload.name, course_templates=course_templates)
-    db.add(obj)
-    db.commit()
-    db.refresh(obj)
-    return obj
+  # create and attach relationship
+  obj = ModuleTemplate(name=payload.name, course_templates=course_templates)
+  db.add(obj)
+  db.commit()
+  db.refresh(obj)
+  return obj

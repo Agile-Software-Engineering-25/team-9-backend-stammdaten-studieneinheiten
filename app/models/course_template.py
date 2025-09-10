@@ -9,5 +9,8 @@ class CourseTemplate(Base, BaseIdMixin):
 
   name = Column(String, nullable=False)
   elective = Column(Boolean, default=False)
-  module_templates = relationship("ModuleTemplate", secondary=course_template_in_modules_table, back_populates="course_templates")
-
+  module_templates = relationship(
+    "ModuleTemplate",
+    secondary=course_template_in_modules_table,
+    back_populates="course_templates",
+  )
