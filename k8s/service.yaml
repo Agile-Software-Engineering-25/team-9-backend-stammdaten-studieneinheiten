@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stammdaten-studieneinheiten
+  labels:
+    app: stammdaten-studieneinheiten
+spec:
+  selector:
+    app: stammdaten-studieneinheiten
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stammdaten-studieneinheiten
+  labels:
+    app: stammdaten-studieneinheiten
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stammdaten-studieneinheiten
+  template:
+    metadata:
+      labels:
+        app: stammdaten-studieneinheiten
+    spec:
+      containers:
+        - name: stammdaten-studieneinheiten
+          image: ghcr.io/agile-software-engineering-25/team-9-backend-stammdaten-studieneinheiten:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "300m"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          env: # add environment variables here if needed
+            - name: SOME_ENVIRONMENT_VARIABLE
+              value: "ᓚᘏᗢ"
