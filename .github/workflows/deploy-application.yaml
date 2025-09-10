@@ -44,7 +44,7 @@ jobs:
       - name: Upload image
         uses: Agile-Software-Engineering-25/build-and-publish-image@v1
         with:
-          file: "./dockerfile"
+          context: ./team-9-backend-stammdaten-studieneinheiten
           push: true
 
       - name: Deploy to Namespace
