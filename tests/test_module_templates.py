@@ -1,6 +1,12 @@
 def test_create_module_template(client):
   response = client.post(
-    "/courses/templates/", json={"name": "Mathe", "elective": False}
+    "/courses/templates/",
+    json={
+      "name": "Mathe",
+      "elective": False,
+      "code": "Test",
+      "planned_semester": 69,
+    },
   )
   assert response.status_code == 200
   data = response.json()
@@ -9,28 +15,35 @@ def test_create_module_template(client):
   assert "id" in data
 
   response = client.post(
-    "/modules/templates/", json={"name": "MatheMod", "course_template_ids": [data['id']]}
+    "/modules/templates/",
+    json={"name": "MatheMod", "course_template_ids": [data["id"]]},
   )
   assert response.status_code == 200
   data = response.json()
   assert data["name"] == "MatheMod"
   assert "id" in data
-  courseTemplates = data['course_templates']
-  assert len(courseTemplates)==1
+  courseTemplates = data["course_templates"]
+  assert len(courseTemplates) == 1
   checkedcourse = courseTemplates[0]
   assert checkedcourse["name"] == "Mathe"
   assert checkedcourse["elective"] is False
 
 
-
 def test_get_course_template(client):
   create_resp = client.post(
-    "/courses/templates/", json={"name": "GDI", "elective": False}
+    "/courses/templates/",
+    json={
+      "name": "GDI",
+      "elective": False,
+      "code": "Test",
+      "planned_semester": 69,
+    },
   )
   assert create_resp.status_code == 200
   template_id = create_resp.json()["id"]
   create_resp = client.post(
-    "/modules/templates/", json={"name": "TestMod", "course_template_ids": [template_id]}
+    "/modules/templates/",
+    json={"name": "TestMod", "course_template_ids": [template_id]},
   )
   assert create_resp.status_code == 200
   template_id = create_resp.json()["id"]
@@ -40,9 +53,9 @@ def test_get_course_template(client):
   data = get_resp.json()
   assert data["id"] == template_id
   assert data["name"] == "TestMod"
-  
-  courseTemplates = data['course_templates']
-  assert len(courseTemplates)==1
+
+  courseTemplates = data["course_templates"]
+  assert len(courseTemplates) == 1
   checkedcourse = courseTemplates[0]
   assert checkedcourse["name"] == "GDI"
   assert checkedcourse["elective"] is False
@@ -57,14 +70,21 @@ def test_get_nonexistent_course_template(client):
 
 def test_get_all_templates(client):
   create_resp = client.post(
-        "/courses/templates/", json={"name": "GDI", "elective": False}
+    "/courses/templates/",
+    json={
+      "name": "GDI",
+      "elective": False,
+      "code": "Test",
+      "planned_semester": 69,
+    },
   )
   assert create_resp.status_code == 200
-  testId = create_resp.json()['id']
+  testId = create_resp.json()["id"]
   # Generate random course templates and add them to the DB
   ids = [
     client.post(
-      "/modules/templates/", json={"name": f"T{i}", "course_template_ids": [testId]}
+      "/modules/templates/",
+      json={"name": f"T{i}", "course_template_ids": [testId]},
     ).json()["id"]
     for i in range(3)
   ]

@@ -5,7 +5,9 @@ class CourseTemplateBase(BaseModel):
   """Test Description"""
 
   name: str
+  code: str
   elective: bool
+  planned_semester: int
 
 
 class CourseTemplateCreate(CourseTemplateBase):

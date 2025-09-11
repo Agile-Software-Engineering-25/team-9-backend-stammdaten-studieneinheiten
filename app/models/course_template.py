@@ -8,7 +8,10 @@ class CourseTemplate(Base, BaseIdMixin):
   __tablename__ = "CourseTemplates"
 
   name = Column(String, nullable=False)
+  code = Column(String, nullable=False)
   elective = Column(Boolean, default=False)
+  planned_semester = Column(Integer)
+
   module_templates = relationship(
     "ModuleTemplate",
     secondary=course_template_in_modules_table,
