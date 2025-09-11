@@ -47,4 +47,4 @@ spec:
             periodSeconds: 20
           env: # add environment variables here if needed
             - name: SOME_ENVIRONMENT_VARIABLE
-              value: "ᓚᘏᗢ"
+              value: "ᓚᘏᗢ ᓚᘏᗢ"
