@@ -6,9 +6,12 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.116.1",
-    "httpx>=0.28.1",
-    "pytest>=8.4.1",
     "sqlalchemy>=2.0.43",
+]
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=8.4.2",
 ]
 
 [tool.ruff]
@@ -21,3 +24,4 @@ indent-style = "space"
 
 [tool.ruff.lint]
 select = ["E", "F", "UP"]
+
