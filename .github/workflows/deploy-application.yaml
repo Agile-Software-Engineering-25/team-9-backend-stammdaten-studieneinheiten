@@ -51,7 +51,7 @@ jobs:
           push: true
 
       - name: Deploy to Namespace
-        uses: Agile-Software-Engineering-25/deploy-to-k8s@v1
+        uses: Agile-Software-Engineering-25/deploy-to-k8s@v1.0.1
         with:
           kubeconfig: ${{ secrets.KUBECONFIG }}
           namespace: ${{ vars.K8S_NAMESPACE }}
