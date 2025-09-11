@@ -22,7 +22,7 @@ spec:
             "app.main:app",
             "--host", "0.0.0.0",
             "--port", "8080",
-            "--root-path", "/masterdata/studies/"
+            "--root-path", "/masterdata/studies"
           ]
           ports:
             - containerPort: 8080
@@ -35,13 +35,13 @@ spec:
               cpu: "300m"
           readinessProbe:
             httpGet:
-              path: /masterdata/studies/health
+              path: /health
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 5
           livenessProbe:
             httpGet:
-              path: /masterdata/studies/health
+              path: /health
               port: 8080
             initialDelaySeconds: 20
             periodSeconds: 20
