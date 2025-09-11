@@ -47,6 +47,7 @@ jobs:
       - name: Upload image
         uses: Agile-Software-Engineering-25/build-and-publish-image@v1
         with:
+          extra_tags: ${{ github.sha }}
           push: true
 
       - name: Deploy to Namespace
@@ -54,3 +55,6 @@ jobs:
         with:
           kubeconfig: ${{ secrets.KUBECONFIG }}
           namespace: ${{ vars.K8S_NAMESPACE }}
+          deployment: stammdaten-studieneinheiten
+          image: ghcr.io/agile-software-engineering-25/team-9-backend-stammdaten-studieneinheiten
+          tag: ${{ github.sha }}
