@@ -10,7 +10,9 @@ def course_templates():
   db = next(override_get_db())
   templates: list[CourseTemplate] = []
   for i in range(5):
-    template = CourseTemplate(name=f"Template {i}", elective=False)
+    template = CourseTemplate(
+      name=f"Template {i}", elective=False, code=f"T{i}", planned_semester=i
+    )
     db.add(template)
     templates.append(template)
   db.commit()
