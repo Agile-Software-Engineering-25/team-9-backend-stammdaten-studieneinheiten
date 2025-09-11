@@ -1,4 +1,4 @@
-name: deploy-to-k8s
+name: test-and-deploy-k8s
 
 on:
   push:
