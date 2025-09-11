@@ -15,7 +15,7 @@ spec:
         app: stammdaten-studieneinheiten
     spec:
       containers:
-        - name: stammdaten-studieneinheiten
+        - name: app
           image: ghcr.io/agile-software-engineering-25/team-9-backend-stammdaten-studieneinheiten:latest
           command: ["uvicorn"]
           args: [
