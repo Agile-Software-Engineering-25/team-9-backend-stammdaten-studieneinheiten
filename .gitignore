@@ -55,3 +55,6 @@ secrets.yaml
 dist/
 build/
 *.egg-info/
+
+# Allow UV Lock
+!uv.lock

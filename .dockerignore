@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtualenvs
+.venv/
+env/
+venv/
+
+# Build / cache
+*.egg-info/
+dist/
+build/
+
+# Git / VCS
+.git/
+.gitignore
+.gitattributes
+.github
+
+# Docker
+Dockerfile
+.dockerignore
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+
+# OS junk
+.DS_Store
+Thumbs.db
