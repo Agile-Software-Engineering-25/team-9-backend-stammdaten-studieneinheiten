@@ -116,3 +116,28 @@ The project uses the following key dependencies:
 - `spring-boot-starter-security`: For securing the application with basic authentication.
 - `springdoc-openapi-ui`: For generating OpenAPI documentation and Swagger UI.
 - `spring-boot-starter-actuator`: For monitoring and managing the application.
+
+
+## Security && rbac
+Endpoint Access/Security is configured in package com.ase.userservice.security via SecurityConfig.java.
+
+To add a new rule, you need to fill the function parameters for this snippet:
+```java
+http
+  .authorizeHttpRequests(authorize -> authorize
+    .requestMatchers("/demo").hasRole("DEFAULT-ROLES-SAU")
+    .requestMatchers("/admin/**").hasRole("admin")
+    .anyRequest().authenticated()
+  )
+  .oauth2ResourceServer(oauth2 -> oauth2
+    .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter))
+  );
+```
+
+Specifically you need to add the following line for each protected route and role:
+```java
+.requestMatchers("/<your-route>").hasRole("<your-role>")
+```
+Glob pattern matching is supported.
+
+If you need more infos regarding secuirty, visit our documentation page: [placeholder](http://example.com)
