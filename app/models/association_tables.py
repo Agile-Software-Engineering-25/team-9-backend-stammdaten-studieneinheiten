@@ -11,3 +11,16 @@ course_template_in_modules_table = Table(
     "module_template_id", ForeignKey("ModuleTemplates.id"), primary_key=True
   ),
 )
+
+module_templates_in_courseofstudy_templates_table = Table(
+  "module_template_in_courseofstudy_templates",
+  Base.metadata,
+  Column(
+    "module_template_id", ForeignKey("ModuleTemplates.id"), primary_key=True
+  ),
+  Column(
+    "courseofstudy_template_id",
+    ForeignKey("CourseOfStudyTemplates.id"),
+    primary_key=True,
+  ),
+)
