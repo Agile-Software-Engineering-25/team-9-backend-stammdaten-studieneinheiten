@@ -40,6 +40,19 @@ def test_get_nonexistent_courseofstudy_template(client):
   assert response.status_code == 404
 
 
+def test_create_courseofstudy_no_modules(client):
+  response = client.post(
+    "/courseofstudies/templates/",
+    json={
+      "name": "Invalid",
+      "degree_type": "professional idiot",
+      "planned_semesters": 69,
+      "module_template_ids": [],
+    },
+  )
+  assert response.status_code == 400
+
+
 def test_get_all_courseofstudy_templates(client, courseofstudy_templates):
   response = client.get("/courseofstudies/templates/")
   assert response.status_code == 200
