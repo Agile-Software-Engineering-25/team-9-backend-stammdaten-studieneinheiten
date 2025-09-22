@@ -5,7 +5,7 @@ from app.schemas.module_templates import ModuleTemplateRead
 class CourseOfStudyTemplateBase(BaseModel):
   name: str
   degree_type: str
-  planned_semester: int
+  planned_semesters: int
 
 
 class CourseOfStudyTemplateCreate(CourseOfStudyTemplateBase):

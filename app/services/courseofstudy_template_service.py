@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from models.module_templates import ModuleTemplate
+from app.models.module_templates import ModuleTemplate
 from app.models.courseofstudy_templates import CourseOfStudyTemplate
 from app.repositories.courseofstudy_template_repository import (
   courseofstudy_template_crud,
@@ -47,7 +47,11 @@ def create_courseofstudy_template(
     )
 
   # create and attach relationship
-  obj = CourseOfStudyTemplate(name=cos.name, module_templates=module_templates)
+  data = cos.model_dump(exclude={"module_template_ids"})
+  obj = CourseOfStudyTemplate(
+    **data,
+    module_templates=module_templates,
+  )
   db.add(obj)
   db.commit()
   db.refresh(obj)
