@@ -1,5 +1,6 @@
 // based on this tutorial: https://www.javacodegeeks.com/2025/07/spring-boot-keycloak-role-based-authorization.html
 
+
 package com.ase.userservice.security;
 
 import org.springframework.core.convert.converter.Converter;
