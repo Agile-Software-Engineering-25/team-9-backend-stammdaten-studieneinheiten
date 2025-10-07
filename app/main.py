@@ -9,6 +9,7 @@ from app.models import course_template
 from app.models import course
 from app.models import module_templates
 from app.models import courseofstudy_templates
+from app.models import module
 
 # Base.metadata.drop_all(bind=engine) # de-comment this if you want to reset the database upon reload
 Base.metadata.create_all(bind=engine)
