@@ -7,7 +7,7 @@ class Module(Base, BaseIdMixin):
     __tablename__ = "Module"
 
     template_id = Column(
-        Integer, ForeignKey("ModuleTemplate.id"), nullable=False
+        Integer, ForeignKey("ModuleTemplates.id"), nullable=False
     )
 
     #dozent_id = Column(
