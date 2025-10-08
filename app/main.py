@@ -11,6 +11,10 @@ from app.models import module_templates
 from app.models import courseofstudy_templates
 from app.models import module
 
+import os
+
+is_deployed = os.getenv("IS_DEPLOYED", "false").lower()=="true"
+
 # Base.metadata.drop_all(bind=engine) # de-comment this if you want to reset the database upon reload
 Base.metadata.create_all(bind=engine)
 
@@ -19,11 +23,15 @@ Base.metadata.create_all(bind=engine)
 fastapi_app = FastAPI(title="team-9-backend-service")
 fastapi_app.include_router(api_router)
 
+origins = []
 # Configure CORS
-origins = [
-  "http://localhost:5173",  # Vite default
-  "http://127.0.0.1:5173",  # sometimes browser uses this
-]
+if not is_deployed:
+  origins = [
+    "http://localhost:5173",  # Vite default
+    "http://127.0.0.1:5173",  # sometimes browser uses this
+  ]
+else:
+  origins = []
 
 fastapi_app.add_middleware(
   CORSMiddleware,
