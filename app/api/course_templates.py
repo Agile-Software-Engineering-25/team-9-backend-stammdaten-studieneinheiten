@@ -25,3 +25,7 @@ def create_course_template(
   template: CourseTemplateCreate, db: Session = Depends(get_db)
 ):
   return course_template_service.create_course_template(db, template)
+
+@router.delete("/")
+def delete_course_template(template_id: int, db: Session = Depends(get_db)):
+    course_template_service.delete_course_template(db, template_id)
