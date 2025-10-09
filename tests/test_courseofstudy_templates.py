@@ -5,6 +5,7 @@ def test_create_courseofstudy_template(client, module_templates):
       "name": "BIN-T",
       "degree_type": "BSc",
       "planned_semesters": 6,
+      "part_time":True,
       "module_template_ids": [mt.id for mt in module_templates[0:3]],
     },
   )
@@ -32,6 +33,7 @@ def test_get_courseofstudy_template(client, courseofstudy_templates):
   assert data["name"] == template.name
   assert data["degree_type"] == template.degree_type
   assert data["planned_semesters"] == template.planned_semesters
+  assert data["part_time"] == template.part_time
 
 
 def test_get_nonexistent_courseofstudy_template(client):
@@ -48,6 +50,7 @@ def test_create_courseofstudy_no_modules(client):
       "degree_type": "professional idiot",
       "planned_semesters": 69,
       "module_template_ids": [],
+      "part_time":False
     },
   )
   assert response.status_code == 400

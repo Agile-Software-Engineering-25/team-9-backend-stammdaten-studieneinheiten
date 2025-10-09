@@ -6,6 +6,7 @@ class CourseOfStudyTemplateBase(BaseModel):
   name: str
   degree_type: str
   planned_semesters: int
+  part_time: bool
 
 
 class CourseOfStudyTemplateCreate(CourseOfStudyTemplateBase):

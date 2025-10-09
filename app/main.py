@@ -14,8 +14,7 @@ from app.models import module
 import os
 
 is_deployed = os.getenv("IS_DEPLOYED", "false").lower()=="true"
-
-# Base.metadata.drop_all(bind=engine) # de-comment this if you want to reset the database upon reload
+#Base.metadata.drop_all(bind=engine) # de-comment this if you want to reset the database upon reload
 Base.metadata.create_all(bind=engine)
 
 
