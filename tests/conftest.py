@@ -133,6 +133,7 @@ def courseofstudy_templates(module_templates):
       planned_semesters=6,
       degree_type="BSc",
       module_templates=module_templates[(i * 3) : (i * 3 + 3)],
+      part_time = True
     )
     db.add(template)
     templates.append(template)
