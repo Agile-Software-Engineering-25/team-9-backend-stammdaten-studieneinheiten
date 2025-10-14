@@ -2,9 +2,12 @@ import os
 from sqlalchemy import create_engine, Integer, Column
 from sqlalchemy.orm import sessionmaker, DeclarativeBase, mapped_column, Mapped
 from sqlalchemy.engine import URL
+from sqlalchemy import MetaData
 
 IS_DEPLOYED = os.getenv("IS_DEPLOYED", "false").lower() == "true"
 DATABASE_URL = os.getenv("DATABASE_URL")
+
+DEFAULT_SCHEMA = os.getenv("BASE_SCHEMA")  # keep the hyphen
 
 if not DATABASE_URL:
     if IS_DEPLOYED:
@@ -15,7 +18,7 @@ if not DATABASE_URL:
         PG_PASS = os.getenv("DB_PASSWORD", "error")
 
         DATABASE_URL = URL.create(
-            "postgresql+psycopg2",
+            "postgresql+pg8000",
             username=PG_USER,
             password=PG_PASS,
             host=PG_HOST,
@@ -36,12 +39,13 @@ else:
         DATABASE_URL,
         pool_pre_ping=True, # helps with stale connections in long-running pods
         future=True,  #not entirely sure what this is, but is apparently best practice
+        connect_args={"options": f'-csearch_path="{DEFAULT_SCHEMA}",public'},
     )
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False)
 
 class Base(DeclarativeBase):
-    pass
+    metadata = MetaData(schema="ase-9_schema") 
 
 class BaseIdMixin:
     id: Mapped[int] = mapped_column(
