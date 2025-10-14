@@ -65,3 +65,5 @@ spec:
               value: 5432
             - name: DATABASE
               value: appdb
+            - name: BASE_SCHEMA
+              value: ase-9_schema
