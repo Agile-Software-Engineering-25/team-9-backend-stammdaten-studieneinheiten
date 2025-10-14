@@ -45,7 +45,10 @@ else:
 SessionLocal = sessionmaker(bind=engine, autoflush=False)
 
 class Base(DeclarativeBase):
-    metadata = MetaData(schema="ase-9_schema") 
+    if IS_DEPLOYED:
+        metadata = MetaData(schema="ase-9_schema") 
+    else:
+        pass
 
 class BaseIdMixin:
     id: Mapped[int] = mapped_column(
