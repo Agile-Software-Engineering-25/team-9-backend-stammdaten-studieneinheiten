@@ -48,7 +48,7 @@ spec:
             - name: SOME_ENVIRONMENT_VARIABLE
               value: "test"
             - name: IS_DEPLOYED
-              value: true
+              value: "true"
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
