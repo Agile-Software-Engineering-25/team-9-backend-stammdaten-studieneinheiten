@@ -62,7 +62,7 @@ spec:
             - name: DB_HOST
               value: postgres.db
             - name: DB_PORT
-              value: 5432
+              value: "5432"
             - name: DATABASE
               value: appdb
             - name: BASE_SCHEMA
