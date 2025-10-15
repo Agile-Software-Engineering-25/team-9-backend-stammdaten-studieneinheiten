@@ -39,7 +39,6 @@ else:
         DATABASE_URL,
         pool_pre_ping=True, # helps with stale connections in long-running pods
         future=True,  #not entirely sure what this is, but is apparently best practice
-        connect_args={"options": f'-csearch_path="{DEFAULT_SCHEMA}",public'},
     )
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False)
