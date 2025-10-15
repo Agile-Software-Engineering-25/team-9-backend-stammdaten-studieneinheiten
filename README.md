@@ -3,6 +3,7 @@ The Backend service for the [Team-9 Frontend](https://github.com/Agile-Software-
 
 ## Features
 - create course templates and instances
+- create module templates and instances
 - ...  
 **TODO**
 
