@@ -3,10 +3,6 @@ from app.schemas.module_templates import ModuleTemplateRead
 
 
 class ModuleBase(BaseModel):
-    semester: int
-    exam_type: str
-    credit_points: float
-    total_units: int
     template_id: int
 
 
