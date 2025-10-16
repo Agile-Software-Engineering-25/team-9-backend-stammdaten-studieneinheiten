@@ -41,4 +41,4 @@ fastapi_app.add_middleware(
 )
 
 # Wrap the app with the prefix-stripping middleware
-app = StripPrefixMiddleware(fastapi_app, prefix="/masterdata/studies")
+app = StripPrefixMiddleware(fastapi_app, prefix="/api/masterdata/studies")
