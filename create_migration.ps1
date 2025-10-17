@@ -10,7 +10,7 @@ Write-Host "=== Alembic Migration Script ==="
 
 # Step 1: Upgrade DB to current head
 Write-Host "Upgrading current DB to head..."
-alembic upgrade head
+uv run alembic upgrade head
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Failed to upgrade to head. Aborting migration."
@@ -19,7 +19,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # Step 2: Generate new migration
 Write-Host "Creating new migration revision..."
-alembic revision --autogenerate -m "$Message"
+uv run alembic revision --autogenerate -m "$Message"
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Migration created successfully."
