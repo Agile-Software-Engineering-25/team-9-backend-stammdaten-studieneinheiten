@@ -23,6 +23,7 @@ cd team-9-backend-stammdaten-studieneinheiten
 uv sync
 ```
 
+
 ### Run the Service
 If it did't happen automatically already, activate the virtual environment (Indicated by the environment name in brackets before the path in your shell):
 #### Windows
@@ -44,6 +45,14 @@ source .venv/bin/activate
 The service is now available on Port 8000 by default. Use the `--port` option to specify a different port.
 
 FastAPI automatically generates a Swagger Documentation under `/docs/`
+
+## Database Migration
+Migration happens automatically when the app starts.  
+If you make any changes to the database schema, you have to create a new database revision for the changes to appear in the app.
+
+Create a new revision by running: ``.\create_migration.ps1`` in a terminal. You will be asked to give it a name.
+
+Any app start from now on will also apply this migration, therefore adding your changes to the database.
 
 ## Testing
 ### Unit Tests
