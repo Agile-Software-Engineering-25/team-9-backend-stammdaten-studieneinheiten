@@ -8,6 +8,7 @@ class CourseBase(BaseModel):
   credit_points: float
   total_units: int
   template_id: int
+  teacher_id: int
 
 
 class CourseCreate(CourseBase):

@@ -10,6 +10,7 @@ class Course(Base, BaseIdMixin):
   exam_type = Column(String, nullable=False)
   credit_points = Column(Float, nullable=False)
   total_units = Column(Integer, nullable=False)
+  teacher_id = Column(Integer, nullable=False)
 
   template_id = Column(
     Integer, ForeignKey("CourseTemplates.id"), nullable=False
