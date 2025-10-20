@@ -8,10 +8,12 @@ class CourseBase(BaseModel):
   credit_points: float
   total_units: int
   template_id: int
+  teaching_instructor: int
+
 
 
 class CourseCreate(CourseBase):
-  pass
+  attending_students: list[int] | None
 
 
 class CourseRead(CourseBase):
