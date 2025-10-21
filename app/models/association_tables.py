@@ -36,3 +36,14 @@ students_in_courses_table = Table(
     "student_id", ForeignKey("Students.id"), primary_key=True
   ),
 )
+
+teachers_in_courses_table = Table(
+  "teachers_in_courses",
+  Base.metadata,
+  Column(
+    "course_id", ForeignKey("Courses.id"), primary_key=True
+  ),
+  Column(
+    "teacher_id", ForeignKey("Teachers.id"), primary_key=True
+  ),
+)

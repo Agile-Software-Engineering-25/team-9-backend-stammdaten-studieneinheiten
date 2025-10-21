@@ -1,15 +1,15 @@
 from pydantic import BaseModel, ConfigDict
 
 
-class StudentBase(BaseModel):
+class TeacherBase(BaseModel):
   """Test Description"""
 
   external_id: int
 
 
-class StudentsCreate(StudentBase):
+class TeacherCreate(TeacherBase):
   pass
 
 
-class StudentsRead(StudentBase):
+class TeacherRead(TeacherBase):
   model_config = ConfigDict(from_attributes=True)

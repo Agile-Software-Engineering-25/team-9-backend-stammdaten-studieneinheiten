@@ -2,7 +2,8 @@ from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from app.core.db import Base, BaseIdMixin
 from app.models.association_tables import (
-  students_in_courses_table
+  students_in_courses_table,
+  teachers_in_courses_table
 )
 
 
@@ -13,7 +14,6 @@ class Course(Base, BaseIdMixin):
   exam_type = Column(String, nullable=False)
   credit_points = Column(Float, nullable=False)
   total_units = Column(Integer, nullable=False)
-  teacher_id = Column(Integer, nullable=False)
 
   template_id = Column(
     Integer, ForeignKey("CourseTemplates.id"), nullable=False
@@ -23,5 +23,11 @@ class Course(Base, BaseIdMixin):
   students = relationship(
     "Students",
     secondary=students_in_courses_table,
+    back_populates="courses",
+  )
+
+  teachers = relationship(
+    "Teachers",
+    secondary=teachers_in_courses_table,
     back_populates="courses",
   )

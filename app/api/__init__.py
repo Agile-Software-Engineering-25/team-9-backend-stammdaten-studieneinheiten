@@ -7,7 +7,8 @@ from . import (
   courses,
   module_templates,
   courseofstudy_templates,
-  students
+  students,
+  teachers
 )
 
 # Every route under this router requires the user to be authenticated
@@ -19,3 +20,4 @@ api_router.include_router(courses.router)
 api_router.include_router(module_templates.router)
 api_router.include_router(courseofstudy_templates.router)
 api_router.include_router(students.router)
+api_router.include_router(teachers.router)
