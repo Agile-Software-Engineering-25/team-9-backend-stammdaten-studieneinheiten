@@ -13,3 +13,7 @@ class StudentsCreate(StudentBase):
 
 class StudentsRead(StudentBase):
   model_config = ConfigDict(from_attributes=True)
+
+class StudentsReadPlus(StudentBase):
+  course_ids: list[int]
+  model_config = ConfigDict(from_attributes=True)

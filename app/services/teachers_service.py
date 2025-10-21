@@ -3,6 +3,7 @@ from sqlalchemy import select
 from app.repositories.teachers_repository import teachers_crud
 from app.schemas.teachers import TeacherCreate
 from app.models.teachers import Teachers
+from app.schemas.teachers import TeacherReadPlus
 from sqlalchemy.exc import NoResultFound
 from fastapi import HTTPException
 
@@ -20,7 +21,12 @@ def get_teachers(db: Session, teacher_external_id: str):
   stmt = select(Teachers).where(Teachers.external_id == teacher_external_id)
   try:
       teacher = db.scalars(stmt).one()
-      return teacher
+      course_ids = [c.id for c in teacher.courses]
+      
+      return TeacherReadPlus(
+        **teacher.__dict__,  # include all base teacher fields
+        course_ids=course_ids
+      )
   except NoResultFound:
       raise HTTPException(status_code=404, detail="Teacher not found")
 

@@ -1,18 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.db import get_db
-from app.schemas.teachers import TeacherCreate, TeacherRead
+from app.schemas.teachers import TeacherCreate, TeacherRead, TeacherReadPlus
 from app.services import teachers_service
 
 router = APIRouter(prefix="/external_connections/teachers", tags=["external_connections"])
 
 
-@router.get("/", response_model=list[TeacherCreate])
+@router.get("/", response_model=list[TeacherRead])
 def list_teachers(db: Session = Depends(get_db)):
   return teachers_service.list_teachers(db)
 
 
-@router.get("/{teacher_external_id}", response_model=TeacherCreate)
+@router.get("/{teacher_external_id}", response_model=TeacherReadPlus)
 def get_teacher(teacher_external_id: str, db: Session = Depends(get_db)):
   teacher = teachers_service.get_teachers(db, teacher_external_id)
   return teacher

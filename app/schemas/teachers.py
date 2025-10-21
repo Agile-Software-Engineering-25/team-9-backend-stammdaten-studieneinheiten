@@ -13,3 +13,7 @@ class TeacherCreate(TeacherBase):
 
 class TeacherRead(TeacherBase):
   model_config = ConfigDict(from_attributes=True)
+
+class TeacherReadPlus(TeacherBase):
+  course_ids: list[int]
+  model_config = ConfigDict(from_attributes=True)
