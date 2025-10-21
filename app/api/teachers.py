@@ -13,7 +13,7 @@ def list_teachers(db: Session = Depends(get_db)):
 
 
 @router.get("/{teacher_id}", response_model=TeacherCreate)
-def get_teacher(teacher_id: int, db: Session = Depends(get_db)):
+def get_teacher(teacher_id: str, db: Session = Depends(get_db)):
   teacher = teachers_service.get_teachers(db, teacher_id)
   if not teacher:
     raise HTTPException(status_code=404, detail="Teacher not found")

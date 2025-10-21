@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict
 class TeacherBase(BaseModel):
   """Test Description"""
 
-  external_id: int
+  external_id: str
 
 
 class TeacherCreate(TeacherBase):

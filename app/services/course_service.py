@@ -19,7 +19,6 @@ from app.schemas.students import StudentsCreate
 
 
 def list_course(db: Session):
-  print("reading list!")
   return course_crud.get_all(db)
 
 
@@ -29,13 +28,12 @@ def get_course(db: Session, template_id: int):
 
 
 def create_course(db: Session, payload: CourseCreate):
-    print("Starting creation")
     # Turn the payload into a dict, excluding students list (Pydantic v2 shown)
     if hasattr(payload, "model_dump"):
         data = payload.model_dump(exclude={"student_ids, teacher_ids"}, exclude_unset=True)
     else:
         data = payload.dict(exclude={"student_ids, teacher_ids"}, exclude_unset=True)  # Pydantic v1 fallback
-    print("checked attrs")
+
     # If no students provided → just create via CRUD
     if not getattr(payload, "student_ids", None):
         if not getattr(payload, "teacher_ids", None):
@@ -68,7 +66,6 @@ def create_course(db: Session, payload: CourseCreate):
 
         # Build the complete, ordered student list matching the requested external_id order
         ordered_students = [existing_by_external[eid] for eid in requested_ids]
-    print("did students")
 
     if getattr(payload, "teacher_ids", None):
         # 1) Fetch existing Students by external_id
@@ -95,8 +92,7 @@ def create_course(db: Session, payload: CourseCreate):
 
         # Build the complete, ordered student list matching the requested external_id order
         added_teachers = [existing_by_external[eid] for eid in requested_ids]
-    print("did teachs!!")
-    print("making course:")
+
     print(data)
      # Pull & remove relationship id lists from the data dict
     student_ids = data.pop("student_ids", None)
@@ -104,18 +100,15 @@ def create_course(db: Session, payload: CourseCreate):
 
     # 4) Create the Course and attach students
     course = Course(**data)
-    print("made course!")
 
     if ordered_students!=None:
         course.students = ordered_students
 
     if added_teachers!= None:
         course.teachers = added_teachers
-    print("added stuff to course!")
 
     db.add(course)
     db.commit()
     db.refresh(course)
-    print("added course?")
     print(course)
     return course

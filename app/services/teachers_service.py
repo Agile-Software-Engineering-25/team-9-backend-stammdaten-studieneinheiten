@@ -12,7 +12,7 @@ def list_teachers(db: Session):
   return teachers_crud.get_all(db)
 
 
-def get_teachers(db: Session, teacher_id: int):
+def get_teachers(db: Session, teacher_id: str):
   return teachers_crud.get(db, teacher_id)
 
 

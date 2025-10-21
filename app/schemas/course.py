@@ -12,8 +12,8 @@ class CourseBase(BaseModel):
     template_id: int
 
 class CourseCreate(CourseBase):
-    student_ids: list[int]
-    teacher_ids: list[int]
+    student_ids: list[str]
+    teacher_ids: list[str]
 
 class CourseRead(CourseBase):
     id: int

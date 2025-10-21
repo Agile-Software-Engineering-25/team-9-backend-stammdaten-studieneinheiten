@@ -13,7 +13,7 @@ def list_students(db: Session = Depends(get_db)):
 
 
 @router.get("/{student_id}", response_model=StudentsRead)
-def get_student(student_id: int, db: Session = Depends(get_db)):
+def get_student(student_id: str, db: Session = Depends(get_db)):
   student = students_service.get_students(db, student_id)
   if not student:
     raise HTTPException(status_code=404, detail="Student not found")

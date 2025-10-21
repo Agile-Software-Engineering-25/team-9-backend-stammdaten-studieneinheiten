@@ -9,7 +9,7 @@ from app.models.association_tables import (
 class Teachers(Base, BaseIdMixin):
   __tablename__ = "Teachers"
 
-  external_id = Column(Integer, nullable=False, unique=True)
+  external_id = Column(String, nullable=False, unique=True)
 
   courses = relationship(
     "Course",
