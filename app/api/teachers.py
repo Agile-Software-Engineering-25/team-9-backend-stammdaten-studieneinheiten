@@ -12,11 +12,9 @@ def list_teachers(db: Session = Depends(get_db)):
   return teachers_service.list_teachers(db)
 
 
-@router.get("/{teacher_id}", response_model=TeacherCreate)
-def get_teacher(teacher_id: str, db: Session = Depends(get_db)):
-  teacher = teachers_service.get_teachers(db, teacher_id)
-  if not teacher:
-    raise HTTPException(status_code=404, detail="Teacher not found")
+@router.get("/{teacher_external_id}", response_model=TeacherCreate)
+def get_teacher(teacher_external_id: str, db: Session = Depends(get_db)):
+  teacher = teachers_service.get_teachers(db, teacher_external_id)
   return teacher
 
 
