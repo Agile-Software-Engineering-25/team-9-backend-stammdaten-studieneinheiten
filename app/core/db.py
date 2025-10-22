@@ -3,6 +3,7 @@ from sqlalchemy import create_engine, Integer, Column
 from sqlalchemy.orm import sessionmaker, DeclarativeBase, mapped_column, Mapped
 from sqlalchemy.engine import URL
 from sqlalchemy import MetaData
+import traceback
 
 IS_DEPLOYED = os.getenv("IS_DEPLOYED", "false").lower() == "true"
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -62,5 +63,12 @@ def get_db():
     db = SessionLocal()
     try:
         yield db
+    except Exception as e:
+        print("There was an error!")
+        print(f"Type: {type(e).__name__}")
+        print(f"Message: {e}")
+        print("Traceback:")
+        traceback.print_exc()
     finally:
+        print("db closed")
         db.close()

@@ -1,6 +1,9 @@
 from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from app.core.db import Base, BaseIdMixin
+from app.models.association_tables import (
+  courses_in_module_table
+)
 
 
 class Module(Base, BaseIdMixin):
@@ -10,11 +13,12 @@ class Module(Base, BaseIdMixin):
         Integer, ForeignKey("ModuleTemplates.id"), nullable=False
     )
 
-    #dozent_id = Column(
-    #    Integer, ForeignKey("Dozent.id"), nullable=False
-    #)
-
-    #studiengang_id = Column(
-    #    Integer, ForeignKey("Studiengang.id"), nullable=False
-    #)
     template = relationship("ModuleTemplate", backref="Courses")
+
+    courses = relationship(
+        "Course",
+        secondary=courses_in_module_table,
+        back_populates="module",
+    )
+
+
