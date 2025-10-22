@@ -24,3 +24,26 @@ module_templates_in_courseofstudy_templates_table = Table(
     primary_key=True,
   ),
 )
+
+
+students_in_courses_table = Table(
+  "students_in_courses",
+  Base.metadata,
+  Column(
+    "course_id", ForeignKey("Courses.id"), primary_key=True
+  ),
+  Column(
+    "student_id", ForeignKey("Students.id"), primary_key=True
+  ),
+)
+
+teachers_in_courses_table = Table(
+  "teachers_in_courses",
+  Base.metadata,
+  Column(
+    "course_id", ForeignKey("Courses.id"), primary_key=True
+  ),
+  Column(
+    "teacher_id", ForeignKey("Teachers.id"), primary_key=True
+  ),
+)

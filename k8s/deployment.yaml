@@ -67,3 +67,5 @@ spec:
               value: appdb
             - name: BASE_SCHEMA
               value: ase-9_schema
+            - name: API_PREFIX
+              value: "sau-portal.de/"

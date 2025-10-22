@@ -1,6 +1,10 @@
 from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from app.core.db import Base, BaseIdMixin
+from app.models.association_tables import (
+  students_in_courses_table,
+  teachers_in_courses_table
+)
 
 
 class Course(Base, BaseIdMixin):
@@ -15,3 +19,15 @@ class Course(Base, BaseIdMixin):
     Integer, ForeignKey("CourseTemplates.id"), nullable=False
   )
   template = relationship("CourseTemplate", backref="Courses")
+
+  students = relationship(
+    "Students",
+    secondary=students_in_courses_table,
+    back_populates="courses",
+  )
+
+  teachers = relationship(
+    "Teachers",
+    secondary=teachers_in_courses_table,
+    back_populates="courses",
+  )

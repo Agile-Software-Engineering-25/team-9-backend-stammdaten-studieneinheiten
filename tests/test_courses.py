@@ -60,6 +60,8 @@ def test_create_course_instance(client, course_templates):
       "exam_type": "Prüfung",
       "credit_points": 5,
       "total_units": 45,
+      "student_ids":["sId1", "sId2", "sId3"],
+      "teacher_ids":["teachId1"]
     },
   )
   assert res.status_code == 200

@@ -80,6 +80,8 @@ def courses(course_templates):
       credit_points=2 * i,
       total_units=5 * i,
       template_id=course_templates[i].id,
+      student_ids = ["testStudentId1", "testStudentId2", "testStudentId3"],
+      teacher_ids = ["teacherTestId"]
     )
     db.add(course)
     courses.append(course)

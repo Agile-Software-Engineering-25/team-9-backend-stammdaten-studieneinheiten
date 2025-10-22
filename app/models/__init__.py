@@ -4,5 +4,7 @@ from . import course
 from . import module_templates
 from . import courseofstudy_templates
 from . import module
+from . import students
+from . import teachers
 
 # Relations do not need to be registered!
