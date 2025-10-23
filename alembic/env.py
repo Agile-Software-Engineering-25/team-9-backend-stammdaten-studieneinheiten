@@ -22,7 +22,9 @@ if config.config_file_name is not None:
   fileConfig(config.config_file_name)
 
 # override URL from db.py
-config.set_main_option("sqlalchemy.url", str(engine.url))
+config.set_main_option(
+  "sqlalchemy.url", engine.url.render_as_string(hide_password=False)
+)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
