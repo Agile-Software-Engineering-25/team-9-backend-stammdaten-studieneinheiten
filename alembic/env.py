@@ -1,5 +1,6 @@
 import sys
 import os
+import urllib
 
 from logging.config import fileConfig
 
@@ -22,9 +23,9 @@ if config.config_file_name is not None:
   fileConfig(config.config_file_name)
 
 # override URL from db.py
-config.set_main_option(
-  "sqlalchemy.url", engine.url.render_as_string(hide_password=False)
-)
+connection_url = engine.url.render_as_string(hide_password=False)
+connection_url = connection_url.replace("%", "%%")
+config.set_main_option("sqlalchemy.url", connection_url)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
