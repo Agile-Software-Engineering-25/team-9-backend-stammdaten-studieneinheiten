@@ -9,10 +9,8 @@ from sqlalchemy import pool
 from alembic import context
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from app.core.db import DATABASE_URL, Base
+from app.core.db import Base, engine
 import app.models
-
-print("DATABASE_URL:", DATABASE_URL)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -24,7 +22,7 @@ if config.config_file_name is not None:
   fileConfig(config.config_file_name)
 
 # override URL from db.py
-config.set_main_option("sqlalchemy.url", str(DATABASE_URL))
+config.set_main_option("sqlalchemy.url", str(engine.url))
 
 # add your model's MetaData object here
 # for 'autogenerate' support
@@ -69,8 +67,6 @@ def run_migrations_online() -> None:
   and associate a connection with the context.
 
   """
-  print("At Alembic runtime:", os.getenv("IS_DEPLOYED"), os.getenv("DB_USER"))
-  print("Final DATABASE_URL:", DATABASE_URL)
   connectable = engine_from_config(
     config.get_section(config.config_ini_section, {}),
     prefix="sqlalchemy.",
