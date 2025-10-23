@@ -3,7 +3,8 @@ from sqlalchemy.orm import relationship
 from app.core.db import Base, BaseIdMixin
 from app.models.association_tables import (
   students_in_courses_table,
-  teachers_in_courses_table
+  teachers_in_courses_table,
+  courses_in_module_table
 )
 
 
@@ -29,5 +30,11 @@ class Course(Base, BaseIdMixin):
   teachers = relationship(
     "Teachers",
     secondary=teachers_in_courses_table,
+    back_populates="courses",
+  )
+
+  module = relationship(
+    "Module",
+    secondary=courses_in_module_table,
     back_populates="courses",
   )
