@@ -69,6 +69,8 @@ def run_migrations_online() -> None:
   and associate a connection with the context.
 
   """
+  print("At Alembic runtime:", os.getenv("IS_DEPLOYED"), os.getenv("DB_USER"))
+  print("Final DATABASE_URL:", DATABASE_URL)
   connectable = engine_from_config(
     config.get_section(config.config_ini_section, {}),
     prefix="sqlalchemy.",
