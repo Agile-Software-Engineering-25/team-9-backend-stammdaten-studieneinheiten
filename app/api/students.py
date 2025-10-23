@@ -12,7 +12,7 @@ def list_students(db: Session = Depends(get_db)):
   return students_service.list_students(db)
 
 
-@router.get("/{student_external_id}", response_model=StudentsReadPlus)
+@router.get("/{student_external_id}", response_model=StudentsRead)
 def get_student(student_external_id: str, db: Session = Depends(get_db)):
   student = students_service.get_students(db, student_external_id)
   return student
@@ -23,3 +23,7 @@ def create_student(
   student: StudentsCreate, db: Session = Depends(get_db)
 ):
   return students_service.create_students(db, student)
+
+@router.get("/{student_external_id}/courses", response_model=StudentsReadPlus)
+def get_course(student_external_id: str, db: Session = Depends(get_db)):
+  return students_service.get_student_courses(db, student_external_id)
