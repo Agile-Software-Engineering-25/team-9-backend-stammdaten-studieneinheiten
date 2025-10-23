@@ -1,6 +1,13 @@
 from sqlalchemy.orm import Session
 from app.repositories.course_of_study_repository import course_of_study_crud
 from app.schemas.coursesofstudy import CourseofStudyCreate
+from app.models.module import Module
+from app.models.courseofstudy_templates import CourseOfStudyTemplate
+from app.models.coursesofstudy import CoursesOfStudy
+from fastapi import HTTPException
+from sqlalchemy import select
+
+
 
 
 # In this case, this file only contains wrappers and could be optional.
@@ -16,5 +23,56 @@ def get_course_of_study(db: Session, template_id: int):
   return course_of_study_crud.get(db, template_id)
 
 
-def create_course_of_study(db: Session, course: CourseofStudyCreate):
-  return course_of_study_crud.create(db, course)
+def create_course_of_study(db: Session, payload: CourseofStudyCreate):
+  if hasattr(payload, "model_dump"):
+    data = payload.model_dump(exclude={"module_ids"}, exclude_unset=True)
+  else:
+    data = payload.dict(exclude={"module_ids"}, exclude_unset=True)  # Pydantic v1 fallback
+
+  if not payload.module_ids:
+    raise HTTPException(
+      status_code=400, detail="At least one module_id is required"
+    )
+
+  # fetch the CourseTemplate rows
+  stmt = select(Module).where(
+    Module.id.in_(payload.module_ids)
+  )
+  modules = list(db.scalars(stmt))
+
+  # optional: ensure all IDs existed
+  if len(modules) != len(set(payload.module_ids)):
+    missing = set(payload.module_ids) - {
+      ct.id for ct in modules
+    }
+    raise HTTPException(
+      status_code=400, detail=f"Unknown module ids: {sorted(missing)}"
+    )
+  
+#check module template________________________________________________________________
+
+  if not payload.template_id:
+    raise HTTPException(
+      status_code=400, detail="A template is required"
+    )
+
+  # fetch the CourseTemplate rows
+  stmt = select(CourseOfStudyTemplate).where(
+    CourseOfStudyTemplate.id==payload.template_id
+  )
+  template = db.scalars(stmt).one()
+
+  # optional: ensure all IDs existed
+  if not template:
+    raise HTTPException(
+      status_code=400, detail=f"Bad template: {payload.template_id}"
+    )
+  print(template)
+
+  student_ids = data.pop("module_ids", None)
+  # create and attach relationship
+  obj = CoursesOfStudy(**data, modules=modules, template=template)
+  db.add(obj)
+  db.commit()
+  db.refresh(obj)
+  return obj
