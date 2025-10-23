@@ -38,7 +38,7 @@ def get_student_courses(db: Session, student_id: str):
     """
     Gibt alle Kursinstanzen eines Studenten anhand der Studenten-ID zurück
     """
-    stmt = select(Students).where(Students.id == student_id)
+    stmt = select(Students).where(Students.external_id == student_id)
     try:
         student = db.scalars(stmt).one()
         return student.courses  # Dies gibt die Liste der Course-Objekte zurück
