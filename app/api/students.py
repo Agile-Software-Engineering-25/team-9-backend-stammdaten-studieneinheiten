@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.db import get_db
-from app.schemas.students import StudentsCreate, StudentsRead, StudentsReadPlus
+from app.schemas.students import StudentsCreate, StudentsRead, StudentsReadPlus, StudentsReadPlus2
 from app.services import students_service
 
 router = APIRouter(prefix="/external_connections/students", tags=["external_connections"])
@@ -24,6 +24,6 @@ def create_student(
 ):
   return students_service.create_students(db, student)
 
-@router.get("/courses/{student_external_id}", response_model=StudentsReadPlus)
+@router.get("/courses/{student_external_id}", response_model=StudentsReadPlus2)
 def get_course(student_external_id: str, db: Session = Depends(get_db)):
   return students_service.get_student_courses(db, student_external_id)

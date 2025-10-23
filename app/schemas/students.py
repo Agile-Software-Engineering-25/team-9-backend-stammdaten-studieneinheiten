@@ -17,3 +17,6 @@ class StudentsRead(StudentBase):
 class StudentsReadPlus(StudentBase):
   course_ids: list[int]
   model_config = ConfigDict(from_attributes=True)
+
+class StudentsReadPlus2(StudentBase):
+  course_ids: list[int]
