@@ -23,3 +23,7 @@ def create_student(
   student: StudentsCreate, db: Session = Depends(get_db)
 ):
   return students_service.create_students(db, student)
+
+@router.get("/courses/{student_external_id}", response_model=StudentsReadPlus)
+def get_course(student_external_id: str, db: Session = Depends(get_db)):
+  return students_service.get_student_courses(db, student_external_id)

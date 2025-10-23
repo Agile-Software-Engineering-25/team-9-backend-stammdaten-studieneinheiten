@@ -33,3 +33,14 @@ def get_students(db: Session, student_external_id: str):
 
 def create_students(db: Session, student: StudentsCreate):
   return student_crud.create(db, student)
+
+def get_student_courses(db: Session, student_id: str):
+    """
+    Gibt alle Kursinstanzen eines Studenten anhand der Studenten-ID zurück
+    """
+    stmt = select(Students).where(Students.id == student_id)
+    try:
+        student = db.scalars(stmt).one()
+        return student.courses  # Dies gibt die Liste der Course-Objekte zurück
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail="Student not found")
