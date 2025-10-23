@@ -12,6 +12,8 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from app.core.db import DATABASE_URL, Base
 import app.models
 
+print("DATABASE_URL:", DATABASE_URL)
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
