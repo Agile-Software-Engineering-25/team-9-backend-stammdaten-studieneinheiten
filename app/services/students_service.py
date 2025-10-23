@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from app.repositories.students_repository import student_crud
 from app.schemas.students import StudentsCreate
-from app.schemas.students import StudentsReadPlus
+from app.schemas.students import StudentsReadPlus, StudentsRead
 from app.models.students import Students
 from sqlalchemy.exc import NoResultFound
 from fastapi import HTTPException
@@ -21,12 +21,8 @@ def get_students(db: Session, student_external_id: str):
     stmt = select(Students).where(Students.external_id == student_external_id)
     try:
         student = db.scalars(stmt).one()
-        course_ids = [c.id for c in student.courses]
 
-        return StudentsReadPlus(
-        **student.__dict__,  # include all base teacher fields
-        course_ids=course_ids
-      )
+        return student
     except NoResultFound:
         raise HTTPException(status_code=404, detail="Student not found")
 
@@ -41,6 +37,6 @@ def get_student_courses(db: Session, student_id: str):
     stmt = select(Students).where(Students.external_id == student_id)
     try:
         student = db.scalars(stmt).one()
-        return student.courses  # Dies gibt die Liste der Course-Objekte zurück
+        return student
     except NoResultFound:
         raise HTTPException(status_code=404, detail="Student not found")
