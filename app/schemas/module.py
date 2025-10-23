@@ -1,21 +1,21 @@
 from pydantic import BaseModel, ConfigDict
 from app.schemas.module_templates import ModuleTemplateRead
+from app.schemas.course import CourseRead
+
 
 
 class ModuleBase(BaseModel):
-    semester: int
-    exam_type: str
-    credit_points: float
-    total_units: int
-    template_id: int
-
+    pass
 
 class ModuleCreate(ModuleBase):
-    pass
+    course_ids: list[int]
+    template_id: int
+
 
 
 class ModuleRead(ModuleBase):
     id: int
     template: ModuleTemplateRead
+    courses: list[CourseRead]
 
     model_config = ConfigDict(from_attributes=True)

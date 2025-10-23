@@ -47,3 +47,17 @@ teachers_in_courses_table = Table(
     "teacher_id", ForeignKey("Teachers.id"), primary_key=True
   ),
 )
+
+
+courses_in_module_table = Table(
+  "courses_in_module",
+  Base.metadata,
+  Column(
+    "course_id", ForeignKey("Courses.id"), primary_key=True
+  ),
+  Column(
+    "module_id", ForeignKey("Module.id"), primary_key=True
+  ),
+)
+
+print("made assoc tables")
