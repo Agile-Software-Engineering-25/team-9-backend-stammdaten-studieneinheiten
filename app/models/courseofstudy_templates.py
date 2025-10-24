@@ -2,9 +2,7 @@ from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table, Boolea
 from sqlalchemy.orm import relationship
 from app.core.db import Base, BaseIdMixin
 from app.models.association_tables import (
-  module_templates_in_courseofstudy_templates_table,
-  cos_templates_for_coursesofstudy_table,
-  
+  module_templates_in_courseofstudy_templates_table  
 )
 
 
@@ -21,8 +19,3 @@ class CourseOfStudyTemplate(Base, BaseIdMixin):
     secondary=module_templates_in_courseofstudy_templates_table,
     back_populates="courseofstudy_templates",
   )
-
-  instances = relationship(
-        "CoursesOfStudy",
-        back_populates="template",
-    )

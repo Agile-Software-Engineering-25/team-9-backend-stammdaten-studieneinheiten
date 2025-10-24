@@ -70,14 +70,3 @@ modules_in_courseofstudy_table = Table(
     "module_id", ForeignKey("Module.id"), primary_key=True
   ),
 )
-
-cos_templates_for_coursesofstudy_table = Table(
-  "cos_templates_for_coursesofstudy",
-  Base.metadata,
-  Column(
-    "courseofstudy_id", ForeignKey("CoursesOfStudy.id"), primary_key=True 
-  ),
-  Column(
-    "template_id", ForeignKey("CourseOfStudyTemplates.id") #CLUE, primkey removed
-  ),
-)
