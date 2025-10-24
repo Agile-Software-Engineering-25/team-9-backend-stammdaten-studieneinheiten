@@ -3,6 +3,8 @@ from sqlalchemy.orm import relationship
 from app.core.db import Base, BaseIdMixin
 from app.models.association_tables import (
   module_templates_in_courseofstudy_templates_table,
+  cos_templates_for_coursesofstudy_table,
+  
 )
 
 
@@ -13,8 +15,14 @@ class CourseOfStudyTemplate(Base, BaseIdMixin):
   degree_type = Column(String, nullable=False)
   planned_semesters = Column(Integer)
   part_time = Column(Boolean)
+
   module_templates = relationship(
     "ModuleTemplate",
     secondary=module_templates_in_courseofstudy_templates_table,
     back_populates="courseofstudy_templates",
   )
+
+  instances = relationship(
+        "CoursesOfStudy",
+        back_populates="template",
+    )

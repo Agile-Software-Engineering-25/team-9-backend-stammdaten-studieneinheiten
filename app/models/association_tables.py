@@ -60,4 +60,24 @@ courses_in_module_table = Table(
   ),
 )
 
-print("made assoc tables")
+modules_in_courseofstudy_table = Table(
+  "modules_in_coursesofstudy",
+  Base.metadata,
+  Column(
+    "courseofstudy_id", ForeignKey("CoursesOfStudy.id"), primary_key=True 
+  ),
+  Column(
+    "module_id", ForeignKey("Module.id"), primary_key=True
+  ),
+)
+
+cos_templates_for_coursesofstudy_table = Table(
+  "cos_templates_for_coursesofstudy",
+  Base.metadata,
+  Column(
+    "courseofstudy_id", ForeignKey("CoursesOfStudy.id"), primary_key=True 
+  ),
+  Column(
+    "template_id", ForeignKey("CourseOfStudyTemplates.id") #CLUE, primkey removed
+  ),
+)
