@@ -1,4 +1,6 @@
 from pydantic import BaseModel, ConfigDict
+from app.schemas.course_template import CourseTemplateRead
+
 
 
 class StudentBase(BaseModel):
@@ -14,6 +16,20 @@ class StudentsCreate(StudentBase):
 class StudentsRead(StudentBase):
   model_config = ConfigDict(from_attributes=True)
 
+
+
+class CourseReadShallow(BaseModel):
+    id: int
+    semester: int
+    exam_type: str
+    credit_points: float
+    total_units: int
+    template_id: int
+    template: CourseTemplateRead
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class StudentsReadPlus(StudentBase):
-  course_ids: list[int]
+  courses: list[CourseReadShallow]
   model_config = ConfigDict(from_attributes=True)

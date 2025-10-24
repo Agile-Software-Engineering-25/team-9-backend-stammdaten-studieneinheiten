@@ -1,5 +1,6 @@
 import sys
 import os
+import urllib
 
 from logging.config import fileConfig
 
@@ -9,10 +10,8 @@ from sqlalchemy import pool
 from alembic import context
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from app.core.db import DATABASE_URL, Base
+from app.core.db import Base, engine
 import app.models
-
-print("DATABASE_URL:", DATABASE_URL)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -24,7 +23,9 @@ if config.config_file_name is not None:
   fileConfig(config.config_file_name)
 
 # override URL from db.py
-config.set_main_option("sqlalchemy.url", str(DATABASE_URL))
+connection_url = engine.url.render_as_string(hide_password=False)
+connection_url = connection_url.replace("%", "%%")
+config.set_main_option("sqlalchemy.url", connection_url)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
