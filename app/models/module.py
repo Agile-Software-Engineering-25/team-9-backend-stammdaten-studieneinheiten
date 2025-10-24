@@ -23,7 +23,7 @@ class Module(Base, BaseIdMixin):
     )
 
     courseofstudy = relationship(
-      "CoursesOfStudy", #CLUE Could be table or class, dunno if that matters
+      "CoursesOfStudy", 
       secondary=modules_in_courseofstudy_table,
       back_populates="modules",
   )

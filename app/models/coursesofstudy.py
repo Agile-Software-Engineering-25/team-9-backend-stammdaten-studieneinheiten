@@ -2,8 +2,7 @@ from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table, DateTi
 from sqlalchemy.orm import relationship
 from app.core.db import Base, BaseIdMixin
 from app.models.association_tables import (
-  modules_in_courseofstudy_table,
-  cos_templates_for_coursesofstudy_table
+  modules_in_courseofstudy_table
 )
 
 
