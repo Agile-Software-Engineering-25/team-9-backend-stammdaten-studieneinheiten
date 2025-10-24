@@ -2,6 +2,7 @@ from pydantic import BaseModel, ConfigDict, field_serializer
 from app.schemas.course_template import CourseTemplateRead
 from app.schemas.teachers import TeacherRead
 from app.schemas.students import StudentsRead
+from typing import Optional
 
 
 class CourseBase(BaseModel):
@@ -12,8 +13,8 @@ class CourseBase(BaseModel):
     template_id: int
 
 class CourseCreate(CourseBase):
-    student_ids: list[str]
-    teacher_ids: list[str]
+    student_ids: Optional[list[str]] = None
+    teacher_ids: Optional[list[str]] = None
 
 class CourseRead(CourseBase):
     id: int
