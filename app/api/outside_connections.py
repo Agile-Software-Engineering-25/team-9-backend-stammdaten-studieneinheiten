@@ -38,15 +38,21 @@ def get_outside_users(usertypes: list[str]):
         if len(usertypes)!=0:
             for usertype in usertypes:
                 if usertype == "student":
-                    results.append(student_json)
+                    for student in student_json:
+                      results.append(student)
                 elif usertype== "lecturer":
-                    results.append(lecturer_json)
+                    for lecturer in lecturer_json:
+                      results.append(lecturer)
                 elif usertype== "employee":
-                    results.append(employee_json)
+                    for employee in employee_json:
+                      results.append(employee)
         else:
-            results.append(lecturer_json)
-            results.append(student_json)
-            results.append(employee_json)
+          for student in student_json:
+            results.append(student)
+          for lecturer in lecturer_json:
+            results.append(lecturer)
+          for employee in employee_json:
+            results.append(employee)
     return results
 
 
