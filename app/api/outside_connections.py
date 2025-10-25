@@ -1,15 +1,28 @@
 import os
 import requests
 import json
+from fastapi import APIRouter, Depends, HTTPException
+
 
 IS_DEPLOYED = os.getenv("IS_DEPLOYED", "false").lower() == "true"
 
 LINK = os.getenv("API_PREFIX", "empty")
 
-def get_outside_users(usertypes: list[str]|None):
+router = APIRouter(prefix="/mockups/users", tags=["Mockup"])
+
+@router.get("/")
+def getAll(usertypes=None):
+    return get_outside_users([])
+
+@router.get('/{user_type}')
+def get_spec_type(user_type: str):
+    return get_outside_users([user_type])
+
+
+def get_outside_users(usertypes: list[str]):
     results=[]
     if IS_DEPLOYED:
-        if usertypes !=None:
+        if len(usertypes)==0:
             for usertype in usertypes:
                 response = requests.get(f"{LINK}/api/v1/users", params=usertype)
                 print(response.url)  # Shows the full URL with query parameters
@@ -22,7 +35,7 @@ def get_outside_users(usertypes: list[str]|None):
             results.append(response.json())
     else:
         #mockup from here, VERY low tech (Conner, don't judge me!)
-        if usertypes !=None:
+        if len(usertypes)!=0:
             for usertype in usertypes:
                 if usertype == "student":
                     results.append(student_json)
