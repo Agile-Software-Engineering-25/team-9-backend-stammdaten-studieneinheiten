@@ -1,8 +1,10 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from app.repositories.module_template_repository import module_template_crud
+from app.services.module_service import list_modules
 from app.schemas.module_templates import ModuleTemplateCreate
 from app.models.module_templates import ModuleTemplate
+from app.models.module import Module
 from app.models.course_template import CourseTemplate
 from fastapi import HTTPException
 
@@ -48,3 +50,23 @@ def create_module_template(db: Session, payload: ModuleTemplateCreate):
   db.commit()
   db.refresh(obj)
   return obj
+
+
+def delete_module_template(db: Session, template_id: int):
+  template = module_template_crud.get(db, template_id)
+  if not template:
+    raise HTTPException(
+      status_code=400,
+      detail=f"Module Template with the following ID does not exist: {template_id}",
+    )
+
+  # Check if no instance used
+  instances = [m for m in list_modules(db) if m.template_id.id == template_id]
+  if len(instances) != 0:
+    raise HTTPException(
+      status_code=400,
+      detail=f"Module Template with ID {template_id} is used in {len(instances)} Module instances. Templates may not be deleted with existing instances.",
+    )
+
+  # Delete
+  module_template_crud.delete(db, template_id)

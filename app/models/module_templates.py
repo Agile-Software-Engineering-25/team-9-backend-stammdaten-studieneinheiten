@@ -15,6 +15,7 @@ class ModuleTemplate(Base, BaseIdMixin):
     "CourseTemplate",
     secondary=course_template_in_modules_table,
     back_populates="module_templates",
+    passive_deletes=True,
   )
   courseofstudy_templates = relationship(
     "CourseOfStudyTemplate",
