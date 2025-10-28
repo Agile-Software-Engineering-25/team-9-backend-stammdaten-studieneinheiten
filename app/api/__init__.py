@@ -27,4 +27,3 @@ api_router.include_router(teachers.router)
 api_router.include_router(courseofstudy.router)
 api_router.include_router(module.router)
 api_router.include_router(outside_connections.router)
-
