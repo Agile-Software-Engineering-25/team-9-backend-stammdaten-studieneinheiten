@@ -96,3 +96,29 @@ def test_get_all_templates(client):
   data = res.json()
   assert len(data) == 3
   assert {t["id"] for t in data} == set(ids)
+
+
+def test_delete_template(client, module_templates):
+  template_to_delete = module_templates[0]
+  template_id = template_to_delete.id
+  res = client.delete(f"/modules/templates/{template_id}")
+  assert res.status_code == 200
+
+  # try getting deleted template, also tests invalid id deletion
+  res = client.get(f"/modules/templates/{template_id}")
+  assert res.status_code == 404
+
+
+def test_delete_template_with_instance(client, module_templates, courses):
+  template_id = module_templates[0].id
+
+  # create instance
+  res = client.post(
+    "/modules/",
+    json={"template_id": template_id, "course_ids": [courses[0].id]},
+  )
+  assert res.status_code == 200
+
+  # try delete
+  res = client.delete(f"/modules/templates/{template_id}")
+  assert res.status_code == 400

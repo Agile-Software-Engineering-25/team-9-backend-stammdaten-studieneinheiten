@@ -56,12 +56,12 @@ def delete_module_template(db: Session, template_id: int):
   template = module_template_crud.get(db, template_id)
   if not template:
     raise HTTPException(
-      status_code=400,
+      status_code=404,
       detail=f"Module Template with the following ID does not exist: {template_id}",
     )
 
   # Check if no instance used
-  instances = [m for m in list_modules(db) if m.template_id.id == template_id]
+  instances = [m for m in list_modules(db) if m.template.id == template_id]
   if len(instances) != 0:
     raise HTTPException(
       status_code=400,
