@@ -70,3 +70,23 @@ def test_get_all_templates(client):
   data = res.json()
   assert len(data) == 3
   assert {t["id"] for t in data} == set(ids)
+
+def test_delete_course_template(client):
+  create_resp = client.post(
+      "/courses/templates/",
+      json={
+        "name": "Grundlagen der Informatik",
+        "elective": False,
+        "planned_semester": 1,
+        "code": "GDI",
+      },
+    )
+  assert create_resp.status_code == 200
+  template_id = create_resp.json()["id"]
+  delete_resp = client.delete(f"/courses/templates/{template_id}")
+  assert delete_resp.status_code == 200
+
+def test_delete_nonexistent_course_template(client):
+  random_id = 420
+  response = client.get(f"/courses/templates/{random_id}")
+  assert response.status_code == 404
