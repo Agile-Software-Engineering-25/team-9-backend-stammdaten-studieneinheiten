@@ -45,11 +45,16 @@ def create_courseofstudy_template(
     raise HTTPException(
       status_code=400, detail=f"Unknown module_template_ids: {sorted(missing)}"
     )
-
+  max_semester = 0
+  for template in module_templates:
+    for course_template in template.course_templates:
+      if course_template.planned_semester > max_semester:
+        max_semester = course_template.planned_semester
   # create and attach relationship
   data = cos.model_dump(exclude={"module_template_ids"})
   obj = CourseOfStudyTemplate(
     **data,
+    planned_semesters=max_semester,
     module_templates=module_templates,
   )
   db.add(obj)
