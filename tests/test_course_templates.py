@@ -87,6 +87,6 @@ def test_delete_course_template(client):
   assert delete_resp.status_code == 200
 
 def test_delete_nonexistent_course_template(client):
-  random_id = 420
+  random_id = 161
   response = client.get(f"/courses/templates/{random_id}")
   assert response.status_code == 404
