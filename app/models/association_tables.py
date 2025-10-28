@@ -56,8 +56,16 @@ teachers_in_courses_table = Table(
 courses_in_module_table = Table(
   "courses_in_module",
   Base.metadata,
-  Column("course_id", ForeignKey("Courses.id"), primary_key=True),
-  Column("module_id", ForeignKey("Module.id"), primary_key=True),
+  Column(
+    "course_id",
+    ForeignKey("Courses.id", name="courses_in_module_course_id_fkey"),
+    primary_key=True,
+  ),
+  Column(
+    "module_id",
+    ForeignKey("Module.id", name="courses_in_module_module_id_fkey"),
+    primary_key=True,
+  ),
 )
 
 modules_in_courseofstudy_table = Table(
