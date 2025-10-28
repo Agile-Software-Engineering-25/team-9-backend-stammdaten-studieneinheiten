@@ -6,10 +6,14 @@ class CourseOfStudyTemplateBase(BaseModel):
   name: str
   degree_type: str
   planned_semesters: int
+  part_time: bool
 
 
-class CourseOfStudyTemplateCreate(CourseOfStudyTemplateBase):
+class CourseOfStudyTemplateCreate(BaseModel):
   # many-to-many, so accept multiple; if you truly want “at least one”, validate in service
+  name: str
+  degree_type: str
+  part_time: bool
   module_template_ids: list[int]
 
 

@@ -7,6 +7,9 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.116.1",
     "sqlalchemy>=2.0.43",
+    "pg8000>=1.30",
+    "alembic>=1.17.0",
+    "requests>=2.32.5",
 ]
 [dependency-groups]
 dev = [
