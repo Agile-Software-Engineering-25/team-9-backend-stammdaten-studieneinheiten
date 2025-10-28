@@ -16,4 +16,5 @@ class CourseTemplate(Base, BaseIdMixin):
     "ModuleTemplate",
     secondary=course_template_in_modules_table,
     back_populates="course_templates",
+    passive_deletes=True,
   )

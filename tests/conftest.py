@@ -80,8 +80,6 @@ def courses(course_templates):
       credit_points=2 * i,
       total_units=5 * i,
       template_id=course_templates[i].id,
-      student_ids = ["testStudentId1", "testStudentId2", "testStudentId3"],
-      teacher_ids = ["teacherTestId"]
     )
     db.add(course)
     courses.append(course)
@@ -135,7 +133,7 @@ def courseofstudy_templates(module_templates):
       planned_semesters=6,
       degree_type="BSc",
       module_templates=module_templates[(i * 3) : (i * 3 + 3)],
-      part_time = True
+      part_time=True,
     )
     db.add(template)
     templates.append(template)

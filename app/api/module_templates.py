@@ -28,3 +28,8 @@ def create_module_templates(
   module_template: ModuleTemplateCreate, db: Session = Depends(get_db)
 ):
   return module_template_service.create_module_template(db, module_template)
+
+
+@router.delete("/{mod_temp_id}")
+def delete_module_template(mod_temp_id: int, db: Session = Depends(get_db)):
+  module_template_service.delete_module_template(db, mod_temp_id)
