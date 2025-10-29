@@ -21,6 +21,19 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     """Upgrade schema."""
     conn = op.get_bind()
+    # WARNING: destructive cleanup to avoid inserting mock data on top of
+    # existing (possibly production) rows. This will remove all rows from
+    # the association tables and the tables that this migration inserts into.
+    # Keep the delete order: associations -> child tables to avoid FK errors.
+    conn.execute(sa.text("DELETE FROM teachers_in_courses"))
+    conn.execute(sa.text("DELETE FROM students_in_courses"))
+    # Remove existing courses (child of CourseTemplates)
+    conn.execute(sa.text("DELETE FROM Courses"))
+    # Remove course templates
+    conn.execute(sa.text("DELETE FROM CourseTemplates"))
+    # Remove teachers and students
+    conn.execute(sa.text("DELETE FROM Teachers"))
+    conn.execute(sa.text("DELETE FROM Students"))
     
     # Create CourseTemplates based on the frontend mock data
     course_templates = [
