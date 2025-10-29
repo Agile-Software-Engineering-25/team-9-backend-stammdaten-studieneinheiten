@@ -25,15 +25,17 @@ def upgrade() -> None:
     # existing (possibly production) rows. This will remove all rows from
     # the association tables and the tables that this migration inserts into.
     # Keep the delete order: associations -> child tables to avoid FK errors.
-    conn.execute(sa.text("DELETE FROM teachers_in_courses"))
-    conn.execute(sa.text("DELETE FROM students_in_courses"))
+    conn.execute(sa.text('DELETE FROM teachers_in_courses'))
+    conn.execute(sa.text('DELETE FROM students_in_courses'))
     # Remove existing courses (child of CourseTemplates)
-    conn.execute(sa.text("DELETE FROM Courses"))
+    # Table names defined in models use CamelCase and are created as
+    # case-sensitive identifiers in migrations; quote them here to match.
+    conn.execute(sa.text('DELETE FROM "Courses"'))
     # Remove course templates
-    conn.execute(sa.text("DELETE FROM CourseTemplates"))
+    conn.execute(sa.text('DELETE FROM "CourseTemplates"'))
     # Remove teachers and students
-    conn.execute(sa.text("DELETE FROM Teachers"))
-    conn.execute(sa.text("DELETE FROM Students"))
+    conn.execute(sa.text('DELETE FROM "Teachers"'))
+    conn.execute(sa.text('DELETE FROM "Students"'))
     
     # Create CourseTemplates based on the frontend mock data
     course_templates = [
@@ -66,8 +68,8 @@ def upgrade() -> None:
     for template in course_templates:
         conn.execute(
             sa.text(
-                "INSERT INTO CourseTemplates (name, code, elective, planned_semester) "
-                "VALUES (:name, :code, :elective, :planned_semester)"
+                'INSERT INTO "CourseTemplates" (name, code, elective, planned_semester) '
+                'VALUES (:name, :code, :elective, :planned_semester)'
             ),
             template
         )
@@ -103,8 +105,8 @@ def upgrade() -> None:
     for course in courses:
         conn.execute(
             sa.text(
-                "INSERT INTO Courses (semester, exam_type, credit_points, total_units, template_id) "
-                "VALUES (:semester, :exam_type, :credit_points, :total_units, :template_id)"
+                'INSERT INTO "Courses" (semester, exam_type, credit_points, total_units, template_id) '
+                'VALUES (:semester, :exam_type, :credit_points, :total_units, :template_id)'
             ),
             course
         )
@@ -112,7 +114,7 @@ def upgrade() -> None:
     # Create Student with the specified external_id
     conn.execute(
         sa.text(
-            "INSERT INTO Students (external_id) VALUES (:external_id)"
+            'INSERT INTO "Students" (external_id) VALUES (:external_id)'
         ),
         {'external_id': 'b7acb825-4e70-49e4-84a1-bf5dc7c8f509'}
     )
@@ -130,7 +132,7 @@ def upgrade() -> None:
     # Create Teacher with the specified external_id
     conn.execute(
         sa.text(
-            "INSERT INTO Teachers (external_id) VALUES (:external_id)"
+            'INSERT INTO "Teachers" (external_id) VALUES (:external_id)'
         ),
         {'external_id': 'fc6ac29a-b9dd-4b35-889f-2baff71f3be1'}
     )
@@ -152,30 +154,32 @@ def downgrade() -> None:
     
     # Remove associations
     conn.execute(
-        sa.text("DELETE FROM students_in_courses WHERE student_id = 1")
+    sa.text('DELETE FROM students_in_courses WHERE student_id = 1')
     )
     
     # Remove student
     conn.execute(
-        sa.text("DELETE FROM Students WHERE external_id = 'b7acb825-4e70-49e4-84a1-bf5dc7c8f509'")
+    sa.text('DELETE FROM "Students" WHERE external_id = :external_id'),
+    {'external_id': 'b7acb825-4e70-49e4-84a1-bf5dc7c8f509'}
     )
 
     # Remove associations with teacher
     conn.execute(
-        sa.text("DELETE FROM teachers_in_courses WHERE teacher_id = 1")
+    sa.text('DELETE FROM teachers_in_courses WHERE teacher_id = 1')
     )
 
     # Remove teacher
     conn.execute(
-        sa.text("DELETE FROM Teachers WHERE external_id = 'fc6ac29a-b9dd-4b35-889f-2baff71f3be1'")
+    sa.text('DELETE FROM "Teachers" WHERE external_id = :external_id'),
+    {'external_id': 'fc6ac29a-b9dd-4b35-889f-2baff71f3be1'}
     )
     
     # Remove courses
     conn.execute(
-        sa.text("DELETE FROM Courses WHERE id BETWEEN 1 AND 20")
+    sa.text('DELETE FROM "Courses" WHERE id BETWEEN 1 AND 20')
     )
     
     # Remove course templates
     conn.execute(
-        sa.text("DELETE FROM CourseTemplates WHERE id BETWEEN 1 AND 20")
+    sa.text('DELETE FROM "CourseTemplates" WHERE id BETWEEN 1 AND 20')
     )
