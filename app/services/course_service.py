@@ -9,6 +9,7 @@ from app.models.students import Students
 from app.models.teachers import Teachers
 from fastapi import HTTPException
 from app.schemas.students import StudentsCreate
+from sqlalchemy.exc import NoResultFound
 
 
 
@@ -96,4 +97,36 @@ def create_course(db: Session, payload: CourseCreate):
     db.commit()
     db.refresh(course)
 
+    return course
+
+
+def edit_course(db:Session, id, payload: CourseCreate):
+    try:
+        course = db.query(Course).filter(Course.id == id).one()
+    except NoResultFound:
+        raise ValueError(f"Course {id} not found")
+    
+
+    update_data = payload.model_dump(exclude_unset=True)
+    print(update_data)
+    complex_attributes=['student_ids', 'teacher_ids']
+    for field, value in update_data.items():
+        if field in complex_attributes:
+            if field=='teacher_ids':
+                requested_ids = list(value)
+                added_teachers=validate_id_existence(db, Teachers, requested_ids)
+                setattr(course, 'teachers', added_teachers)
+            elif field=='student_ids':
+                requested_ids = list(value)
+                new_students=validate_id_existence(db, Students, requested_ids)
+                setattr(course, 'students', new_students)
+
+        else:
+            if hasattr(Course, field):
+                setattr(course, field, value)
+
+    # committing will flush the mutations as UPDATE
+    db.commit()
+
+    # optional: session.refresh(user) to ensure we return DB state
     return course
