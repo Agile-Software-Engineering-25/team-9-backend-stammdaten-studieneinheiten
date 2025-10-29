@@ -114,6 +114,24 @@ def upgrade() -> None:
             {'course_id': course_id, 'student_id': 1}
         )
 
+    # Create Teacher with the specified external_id
+    conn.execute(
+        sa.text(
+            "INSERT INTO Teachers (external_id) VALUES (:external_id)"
+        ),
+        {'external_id': 'fc6ac29a-b9dd-4b35-889f-2baff71f3be1'}
+    )
+
+    # Link teacher to all courses (course_id 1-20, teacher_id 1)
+    for course_id in range(1, 21):
+            conn.execute(
+                sa.text(
+                    "INSERT INTO teachers_in_courses (course_id, teacher_id) "
+                    "VALUES (:course_id, :teacher_id)"
+                ),
+                {'course_id': course_id, 'teacher_id': 1}
+            )
+
 
 def downgrade() -> None:
     """Downgrade schema."""
@@ -127,6 +145,16 @@ def downgrade() -> None:
     # Remove student
     conn.execute(
         sa.text("DELETE FROM Students WHERE external_id = 'b7acb825-4e70-49e4-84a1-bf5dc7c8f509'")
+    )
+
+    # Remove associations with teacher
+    conn.execute(
+        sa.text("DELETE FROM teachers_in_courses WHERE teacher_id = 1")
+    )
+
+    # Remove teacher
+    conn.execute(
+        sa.text("DELETE FROM Teachers WHERE external_id = 'fc6ac29a-b9dd-4b35-889f-2baff71f3be1'")
     )
     
     # Remove courses
