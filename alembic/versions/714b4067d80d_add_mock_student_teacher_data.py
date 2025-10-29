@@ -25,15 +25,22 @@ def upgrade() -> None:
     # existing (possibly production) rows. This will remove all rows from
     # the association tables and the tables that this migration inserts into.
     # Keep the delete order: associations -> child tables to avoid FK errors.
-    conn.execute(sa.text('DELETE FROM teachers_in_courses'))
-    conn.execute(sa.text('DELETE FROM students_in_courses'))
-    # Remove existing courses (child of CourseTemplates)
+    
+    # Step 1: Delete all association table rows that reference entities we'll delete
+    # (these have FKs pointing to Courses, Students, Teachers, CourseTemplates, etc.)
+    conn.execute(sa.text('DELETE FROM teachers_in_courses'))  # FK to Courses.id, Teachers.id
+    conn.execute(sa.text('DELETE FROM students_in_courses'))  # FK to Courses.id, Students.id
+    conn.execute(sa.text('DELETE FROM courses_in_module'))    # FK to Courses.id, Module.id
+    conn.execute(sa.text('DELETE FROM course_template_in_modules'))  # FK to CourseTemplates.id, ModuleTemplates.id
+    
+    # Step 2: Delete child entities that have FKs to parents we'll delete
+    # Courses has FK to CourseTemplates.id, so delete Courses before CourseTemplates
     # Table names defined in models use CamelCase and are created as
     # case-sensitive identifiers in migrations; quote them here to match.
     conn.execute(sa.text('DELETE FROM "Courses"'))
-    # Remove course templates
+    
+    # Step 3: Delete parent entities (no other entities reference these in this migration's scope)
     conn.execute(sa.text('DELETE FROM "CourseTemplates"'))
-    # Remove teachers and students
     conn.execute(sa.text('DELETE FROM "Teachers"'))
     conn.execute(sa.text('DELETE FROM "Students"'))
     
