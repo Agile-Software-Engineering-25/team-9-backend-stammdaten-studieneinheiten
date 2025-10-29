@@ -26,23 +26,94 @@ def upgrade() -> None:
     # the association tables and the tables that this migration inserts into.
     # Keep the delete order: associations -> child tables to avoid FK errors.
     
-    # Step 1: Delete all association table rows that reference entities we'll delete
-    # (these have FKs pointing to Courses, Students, Teachers, CourseTemplates, etc.)
-    conn.execute(sa.text('DELETE FROM teachers_in_courses'))  # FK to Courses.id, Teachers.id
-    conn.execute(sa.text('DELETE FROM students_in_courses'))  # FK to Courses.id, Students.id
-    conn.execute(sa.text('DELETE FROM courses_in_module'))    # FK to Courses.id, Module.id
-    conn.execute(sa.text('DELETE FROM course_template_in_modules'))  # FK to CourseTemplates.id, ModuleTemplates.id
+    # Step 1: Delete all association table rows that reference the specific mock data
+    # we're about to insert (to make this migration idempotent)
+    # Note: We only delete rows related to our mock student/teacher, not all data
     
-    # Step 2: Delete child entities that have FKs to parents we'll delete
-    # Courses has FK to CourseTemplates.id, so delete Courses before CourseTemplates
-    # Table names defined in models use CamelCase and are created as
-    # case-sensitive identifiers in migrations; quote them here to match.
-    conn.execute(sa.text('DELETE FROM "Courses"'))
+    # First, check if our mock student/teacher already exist and clean up their associations
+    result = conn.execute(sa.text('SELECT id FROM "Students" WHERE external_id = :external_id'), 
+                         {'external_id': 'b7acb825-4e70-49e4-84a1-bf5dc7c8f509'})
+    student_row = result.fetchone()
+    if student_row:
+        student_id = student_row[0]
+        conn.execute(sa.text('DELETE FROM students_in_courses WHERE student_id = :student_id'), 
+                    {'student_id': student_id})
+        conn.execute(sa.text('DELETE FROM "Students" WHERE id = :student_id'), 
+                    {'student_id': student_id})
     
-    # Step 3: Delete parent entities (no other entities reference these in this migration's scope)
-    conn.execute(sa.text('DELETE FROM "CourseTemplates"'))
-    conn.execute(sa.text('DELETE FROM "Teachers"'))
-    conn.execute(sa.text('DELETE FROM "Students"'))
+    result = conn.execute(sa.text('SELECT id FROM "Teachers" WHERE external_id = :external_id'), 
+                         {'external_id': 'fc6ac29a-b9dd-4b35-889f-2baff71f3be1'})
+    teacher_row = result.fetchone()
+    if teacher_row:
+        teacher_id = teacher_row[0]
+        conn.execute(sa.text('DELETE FROM teachers_in_courses WHERE teacher_id = :teacher_id'), 
+                    {'teacher_id': teacher_id})
+        conn.execute(sa.text('DELETE FROM "Teachers" WHERE id = :teacher_id'), 
+                    {'teacher_id': teacher_id})
+    
+    # Clean up any existing mock course templates and their courses by code
+    # (assuming MATH1, ENG1, etc. are unique to this mock data)
+    mock_codes = ['MATH1', 'ENG1', 'INFO1', 'LWA', 'PROG1', 'ADS', 'PROG2', 'KOMM', 
+                  'MATH2', 'TI', 'OS', 'DB', 'SEC', 'NET', 'PM', 'ASE', 'DABD', 
+                  'HCI', 'IKHT', 'TIRA']
+    
+    # Build IN clause for SQL (works on both SQLite and PostgreSQL)
+    codes_placeholder = ','.join([f':code{i}' for i in range(len(mock_codes))])
+    codes_params = {f'code{i}': code for i, code in enumerate(mock_codes)}
+    
+    # Get IDs of existing mock templates
+    result = conn.execute(
+        sa.text(f'SELECT id FROM "CourseTemplates" WHERE code IN ({codes_placeholder})'), 
+        codes_params
+    )
+    template_ids = [row[0] for row in result.fetchall()]
+    
+    if template_ids:
+        # Build IN clause for template_ids
+        template_ids_placeholder = ','.join([f':tid{i}' for i in range(len(template_ids))])
+        template_ids_params = {f'tid{i}': tid for i, tid in enumerate(template_ids)}
+        
+        # Get course IDs that reference these templates
+        result = conn.execute(
+            sa.text(f'SELECT id FROM "Courses" WHERE template_id IN ({template_ids_placeholder})'), 
+            template_ids_params
+        )
+        course_ids = [row[0] for row in result.fetchall()]
+        
+        if course_ids:
+            # Build IN clause for course_ids
+            course_ids_placeholder = ','.join([f':cid{i}' for i in range(len(course_ids))])
+            course_ids_params = {f'cid{i}': cid for i, cid in enumerate(course_ids)}
+            
+            # Delete associations first
+            conn.execute(
+                sa.text(f'DELETE FROM teachers_in_courses WHERE course_id IN ({course_ids_placeholder})'), 
+                course_ids_params
+            )
+            conn.execute(
+                sa.text(f'DELETE FROM students_in_courses WHERE course_id IN ({course_ids_placeholder})'), 
+                course_ids_params
+            )
+            conn.execute(
+                sa.text(f'DELETE FROM courses_in_module WHERE course_id IN ({course_ids_placeholder})'), 
+                course_ids_params
+            )
+            # Delete courses
+            conn.execute(
+                sa.text(f'DELETE FROM "Courses" WHERE id IN ({course_ids_placeholder})'), 
+                course_ids_params
+            )
+        
+        # Delete associations with templates
+        conn.execute(
+            sa.text(f'DELETE FROM course_template_in_modules WHERE course_template_id IN ({template_ids_placeholder})'), 
+            template_ids_params
+        )
+        # Delete templates
+        conn.execute(
+            sa.text(f'DELETE FROM "CourseTemplates" WHERE id IN ({template_ids_placeholder})'), 
+            template_ids_params
+        )
     
     # Create CourseTemplates based on the frontend mock data
     course_templates = [
