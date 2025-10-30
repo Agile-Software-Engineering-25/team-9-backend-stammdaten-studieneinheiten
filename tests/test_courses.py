@@ -87,3 +87,8 @@ def test_get_course(client, courses):
   assert data["credit_points"] == c.credit_points
   assert data["total_units"] == c.total_units
   assert data["template_id"] == c.template_id
+
+def test_delete_course(client, courses):
+  c = courses[0]
+  res = client.delete(f"/courses/{c.id}")
+  assert res.status_code == 200

@@ -26,6 +26,8 @@ def list_course(db: Session):
 def get_course(db: Session, template_id: int):
   return course_crud.get(db, template_id)
 
+def delete_course(db: Session, template_id: int):
+    return course_crud.delete(db, template_id)
 
 def validate_id_existence(db:Session, table, requested_ids):
     stmt = select(table).where(table.external_id.in_(requested_ids))
