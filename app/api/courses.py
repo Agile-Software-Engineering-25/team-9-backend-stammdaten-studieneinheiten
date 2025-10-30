@@ -23,3 +23,7 @@ def get_course(course_id: int, db: Session = Depends(get_db)):
 @router.post("/", response_model=CourseRead)
 def create_course(course: CourseCreate, db: Session = Depends(get_db)):
   return course_service.create_course(db, course)
+
+@router.delete("/{course_id}")
+def delete_course(course_id: int, db: Session = Depends(get_db)):
+  return course_service.delete_course(db, course_id)

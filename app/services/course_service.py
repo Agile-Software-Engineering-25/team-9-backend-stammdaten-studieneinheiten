@@ -25,7 +25,8 @@ def list_course(db: Session):
 def get_course(db: Session, template_id: int):
   return course_crud.get(db, template_id)
 
-
+def delete_course(db: Session, template_id: int):
+    return course_crud.delete(db, template_id)
 
 def create_course(db: Session, payload: CourseCreate):
     # 1. Extract base course data (no relationship lists)
