@@ -143,86 +143,95 @@ def upgrade() -> None:
         {'name': 'Technische Informatik und Rechnerarchitekturen und XAAS', 'code': 'TIRA', 'elective': False, 'planned_semester': 4},
     ]
     
+    # Insert templates and capture the actual generated IDs
+    template_ids = []
     for template in course_templates:
-        conn.execute(
+        result = conn.execute(
             sa.text(
                 'INSERT INTO "CourseTemplates" (name, code, elective, planned_semester) '
-                'VALUES (:name, :code, :elective, :planned_semester)'
+                'VALUES (:name, :code, :elective, :planned_semester) RETURNING id'
             ),
             template
         )
+        template_ids.append(result.fetchone()[0])
     
-    # Create Courses based on templates
+    # Create Courses based on templates using actual IDs
     courses = [
         # Semester 1
-        {'semester': 1, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_id': 1},
-        {'semester': 1, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_id': 2},
-        {'semester': 1, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_id': 3},
-        {'semester': 1, 'exam_type': 'Portfolio', 'credit_points': 5, 'total_units': 60, 'template_id': 4},
-        {'semester': 1, 'exam_type': 'Klausur', 'credit_points': 10, 'total_units': 120, 'template_id': 5},
+        {'semester': 1, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_idx': 0},
+        {'semester': 1, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_idx': 1},
+        {'semester': 1, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_idx': 2},
+        {'semester': 1, 'exam_type': 'Portfolio', 'credit_points': 5, 'total_units': 60, 'template_idx': 3},
+        {'semester': 1, 'exam_type': 'Klausur', 'credit_points': 10, 'total_units': 120, 'template_idx': 4},
         # Semester 2
-        {'semester': 2, 'exam_type': 'Klausur', 'credit_points': 10, 'total_units': 120, 'template_id': 6},
-        {'semester': 2, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_id': 7},
-        {'semester': 2, 'exam_type': 'Präsentation', 'credit_points': 5, 'total_units': 60, 'template_id': 8},
-        {'semester': 2, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_id': 9},
-        {'semester': 2, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_id': 10},
+        {'semester': 2, 'exam_type': 'Klausur', 'credit_points': 10, 'total_units': 120, 'template_idx': 5},
+        {'semester': 2, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_idx': 6},
+        {'semester': 2, 'exam_type': 'Präsentation', 'credit_points': 5, 'total_units': 60, 'template_idx': 7},
+        {'semester': 2, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_idx': 8},
+        {'semester': 2, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_idx': 9},
         # Semester 3
-        {'semester': 3, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_id': 11},
-        {'semester': 3, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_id': 12},
-        {'semester': 3, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_id': 13},
-        {'semester': 3, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_id': 14},
-        {'semester': 3, 'exam_type': 'Portfolio', 'credit_points': 5, 'total_units': 60, 'template_id': 15},
+        {'semester': 3, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_idx': 10},
+        {'semester': 3, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_idx': 11},
+        {'semester': 3, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_idx': 12},
+        {'semester': 3, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_idx': 13},
+        {'semester': 3, 'exam_type': 'Portfolio', 'credit_points': 5, 'total_units': 60, 'template_idx': 14},
         # Semester 4
-        {'semester': 4, 'exam_type': 'Kombiniert', 'credit_points': 10, 'total_units': 120, 'template_id': 16},
-        {'semester': 4, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_id': 17},
-        {'semester': 4, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_id': 18},
-        {'semester': 4, 'exam_type': 'Präsentation', 'credit_points': 5, 'total_units': 60, 'template_id': 19},
-        {'semester': 4, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_id': 20},
+        {'semester': 4, 'exam_type': 'Kombiniert', 'credit_points': 10, 'total_units': 120, 'template_idx': 15},
+        {'semester': 4, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_idx': 16},
+        {'semester': 4, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_idx': 17},
+        {'semester': 4, 'exam_type': 'Präsentation', 'credit_points': 5, 'total_units': 60, 'template_idx': 18},
+        {'semester': 4, 'exam_type': 'Klausur', 'credit_points': 5, 'total_units': 60, 'template_idx': 19},
     ]
     
+    course_ids = []
     for course in courses:
-        conn.execute(
+        template_idx = course.pop('template_idx')
+        course['template_id'] = template_ids[template_idx]
+        result = conn.execute(
             sa.text(
                 'INSERT INTO "Courses" (semester, exam_type, credit_points, total_units, template_id) '
-                'VALUES (:semester, :exam_type, :credit_points, :total_units, :template_id)'
+                'VALUES (:semester, :exam_type, :credit_points, :total_units, :template_id) RETURNING id'
             ),
             course
         )
+        course_ids.append(result.fetchone()[0])
     
     # Create Student with the specified external_id
-    conn.execute(
+    result = conn.execute(
         sa.text(
-            'INSERT INTO "Students" (external_id) VALUES (:external_id)'
+            'INSERT INTO "Students" (external_id) VALUES (:external_id) RETURNING id'
         ),
         {'external_id': 'b7acb825-4e70-49e4-84a1-bf5dc7c8f509'}
     )
+    student_id = result.fetchone()[0]
     
-    # Link student to all courses (course_id 1-20, student_id 1)
-    for course_id in range(1, 21):
+    # Link student to all courses using actual course IDs
+    for course_id in course_ids:
         conn.execute(
             sa.text(
                 "INSERT INTO students_in_courses (course_id, student_id) "
                 "VALUES (:course_id, :student_id)"
             ),
-            {'course_id': course_id, 'student_id': 1}
+            {'course_id': course_id, 'student_id': student_id}
         )
 
     # Create Teacher with the specified external_id
-    conn.execute(
+    result = conn.execute(
         sa.text(
-            'INSERT INTO "Teachers" (external_id) VALUES (:external_id)'
+            'INSERT INTO "Teachers" (external_id) VALUES (:external_id) RETURNING id'
         ),
         {'external_id': 'fc6ac29a-b9dd-4b35-889f-2baff71f3be1'}
     )
+    teacher_id = result.fetchone()[0]
 
-    # Link teacher to all courses (course_id 1-20, teacher_id 1)
-    for course_id in range(1, 21):
+    # Link teacher to all courses using actual course IDs
+    for course_id in course_ids:
             conn.execute(
                 sa.text(
                     "INSERT INTO teachers_in_courses (course_id, teacher_id) "
                     "VALUES (:course_id, :teacher_id)"
                 ),
-                {'course_id': course_id, 'teacher_id': 1}
+                {'course_id': course_id, 'teacher_id': teacher_id}
             )
 
 
