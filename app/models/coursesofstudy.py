@@ -12,6 +12,7 @@ class CoursesOfStudy(Base, BaseIdMixin):
   name = Column(String, nullable=False)
   startDate = Column(DateTime, nullable=False)
   endDate = Column(DateTime, nullable=False)
+  cohort = Column(String, nullable=False)
 
   template_id = Column(
         Integer, ForeignKey("CourseOfStudyTemplates.id"), nullable=False

@@ -24,6 +24,11 @@ def get_course(course_id: int, db: Session = Depends(get_db)):
 def create_course(course: CourseCreate, db: Session = Depends(get_db)):
   return course_service.create_course(db, course)
 
+
+@router.put("/update/{course_id}", response_model=CourseRead)
+def create_course(course_id:int, course: CourseCreate, db: Session = Depends(get_db)):
+  return course_service.edit_course(db, course_id , course)
+  
 @router.delete("/{course_id}")
 def delete_course(course_id: int, db: Session = Depends(get_db)):
   return course_service.delete_course(db, course_id)

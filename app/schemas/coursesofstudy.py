@@ -8,7 +8,7 @@ class CourseofStudyBase(BaseModel):
   name: str
   startDate: datetime
   endDate: datetime
-
+  cohort: str
 
 class CourseofStudyCreate(CourseofStudyBase):
   module_ids: list[int]
