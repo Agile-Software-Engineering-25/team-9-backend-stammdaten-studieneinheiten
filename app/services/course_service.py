@@ -9,6 +9,7 @@ from app.models.students import Students
 from app.models.teachers import Teachers
 from fastapi import HTTPException
 from app.schemas.students import StudentsCreate
+from sqlalchemy.exc import NoResultFound
 
 
 
@@ -27,6 +28,33 @@ def get_course(db: Session, template_id: int):
 
 def delete_course(db: Session, template_id: int):
     return course_crud.delete(db, template_id)
+
+def validate_id_existence(db:Session, table, requested_ids):
+    stmt = select(table).where(table.external_id.in_(requested_ids))
+    existing = list(db.scalars(stmt))
+    existing_by_external = {s.external_id: s for s in existing}
+
+    # Find which external_ids don't exist yet
+    missing_ids = [
+        eid for eid in requested_ids if eid not in existing_by_external
+    ]
+
+    # Create missing Objects
+    new_objects = [table(external_id=eid) for eid in missing_ids]
+    if new_objects:
+        db.add_all(new_objects)
+        db.flush()  # assign PKs
+
+        # Add them to the lookup
+        for s in new_objects:
+            existing_by_external[s.external_id] = s
+
+    # Build list in original order
+    ordered_objects = [
+        existing_by_external[eid] for eid in requested_ids
+    ]
+    return ordered_objects
+
 
 def create_course(db: Session, payload: CourseCreate):
     # 1. Extract base course data (no relationship lists)
@@ -50,52 +78,13 @@ def create_course(db: Session, payload: CourseCreate):
         # Deduplicate but keep order
         requested_ids = list(dict.fromkeys(payload.student_ids))
 
-        stmt = select(Students).where(Students.external_id.in_(requested_ids))
-        existing_students = list(db.scalars(stmt))
-        existing_by_external = {s.external_id: s for s in existing_students}
-
-        # Find which external_ids don't exist yet
-        missing_ids = [
-            eid for eid in requested_ids if eid not in existing_by_external
-        ]
-
-        # Create missing Students
-        new_students = [Students(external_id=eid) for eid in missing_ids]
-        if new_students:
-            db.add_all(new_students)
-            db.flush()  # assign PKs
-
-            # Add them to the lookup
-            for s in new_students:
-                existing_by_external[s.external_id] = s
-
-        # Build list in original order
-        ordered_students = [
-            existing_by_external[eid] for eid in requested_ids
-        ]
+        ordered_students=validate_id_existence(db, Students, requested_ids)
 
     # 3. Handle teachers if provided
     if payload.teacher_ids:
         requested_ids = list(dict.fromkeys(payload.teacher_ids))
 
-        stmt = select(Teachers).where(Teachers.external_id.in_(requested_ids))
-        existing_teachers = list(db.scalars(stmt))
-        existing_by_external = {t.external_id: t for t in existing_teachers}
-
-        missing_ids = [
-            eid for eid in requested_ids if eid not in existing_by_external
-        ]
-
-        new_teachers = [Teachers(external_id=eid) for eid in missing_ids]
-        if new_teachers:
-            db.add_all(new_teachers)
-            db.flush()
-            for tchr in new_teachers:
-                existing_by_external[tchr.external_id] = tchr
-
-        added_teachers = [
-            existing_by_external[eid] for eid in requested_ids
-        ]
+        added_teachers=validate_id_existence(db, Teachers, requested_ids)
 
     # 4. Create the Course itself
     course = Course(**data)
@@ -110,4 +99,36 @@ def create_course(db: Session, payload: CourseCreate):
     db.commit()
     db.refresh(course)
 
+    return course
+
+
+def edit_course(db:Session, id, payload: CourseCreate):
+    try:
+        course = db.query(Course).filter(Course.id == id).one()
+    except NoResultFound:
+        raise ValueError(f"Course {id} not found")
+    
+
+    update_data = payload.model_dump(exclude_unset=True)
+    print(update_data)
+    complex_attributes=['student_ids', 'teacher_ids']
+    for field, value in update_data.items():
+        if field in complex_attributes:
+            if field=='teacher_ids':
+                requested_ids = list(value)
+                added_teachers=validate_id_existence(db, Teachers, requested_ids)
+                setattr(course, 'teachers', added_teachers)
+            elif field=='student_ids':
+                requested_ids = list(value)
+                new_students=validate_id_existence(db, Students, requested_ids)
+                setattr(course, 'students', new_students)
+
+        else:
+            if hasattr(Course, field):
+                setattr(course, field, value)
+
+    # committing will flush the mutations as UPDATE
+    db.commit()
+
+    # optional: session.refresh(user) to ensure we return DB state
     return course
