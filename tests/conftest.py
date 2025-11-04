@@ -8,6 +8,7 @@ from app.main import fastapi_app as app
 from app.models.course_template import CourseTemplate
 from app.models.course import Course
 from app.models.module_templates import ModuleTemplate
+from app.models.module import Module
 from app.models.courseofstudy_templates import CourseOfStudyTemplate
 
 # Test DB Setup
@@ -115,6 +116,30 @@ def module_templates(course_templates):
     db.expunge(t)
 
   return templates
+
+
+@pytest.fixture()
+def modules(module_templates, courses):
+  """
+  Generate a list of modules based on a list of module templates and courses
+  and add them to the DB
+  """
+  db = next(override_get_db())
+  modules: list[Module] = []
+  count = len(module_templates)
+  for i in range(count):
+    module = Module(
+      template_id=module_templates[i].id, courses=courses[(i * 2) : (i * 2 + 2)]
+    )
+    db.add(module)
+    modules.append(module)
+  db.commit()
+
+  for m in modules:
+    db.refresh(m)
+    db.expunge(m)
+
+  return modules
 
 
 @pytest.fixture()

@@ -21,6 +21,10 @@ def get_module(db: Session, module_id: int):
   return module_crud.get(db, module_id)
 
 
+def delete_module(db: Session, module_id: int):
+  return module_crud.delete(db, module_id)
+
+
 def create_module(db: Session, payload: ModuleCreate):
   # enforce “at least one” if desired
   if not payload.course_ids:
