@@ -23,10 +23,10 @@ def create_course_template(db: Session, course: CourseTemplateCreate):
 
 
 def delete_course_template(db: Session, template_id: int):
-  instances = [m for m in list_course(db) if m.template_id.id == template_id]
+  instances = [m for m in list_course(db) if m.template.id == template_id]
   if instances:
     raise HTTPException(
-        status_code=404,
-        detail="There is at least one course instance using the template",
-      )
+      status_code=404,
+      detail="There is at least one course instance using the template",
+    )
   return course_template_crud.delete(db, template_id)
