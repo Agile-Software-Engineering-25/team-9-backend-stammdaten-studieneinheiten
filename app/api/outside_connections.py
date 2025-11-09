@@ -28,7 +28,7 @@ def get_outside_users(usertypes: list[str]):
                 print(response.url)  # Shows the full URL with query parameters
                 print(response.json())
                 for result in response.json():
-                  results.append(r)
+                  results.append(result)
         else:
             response = requests.get(f"{LINK}team-11-api/api/v1/users")
             print(response.url)  # Shows the full URL with query parameters
