@@ -24,15 +24,16 @@ def get_outside_users(usertypes: list[str]):
     if IS_DEPLOYED:
         if len(usertypes)!=0:
             for usertype in usertypes:
-                response = requests.get(f"{LINK}api/v1/users", params=usertype)
+                response = requests.get(f"{LINK}team-11-api/api/v1/users?withDetails=true&userType="+usertype)
                 print(response.url)  # Shows the full URL with query parameters
                 print(response.json())
-                results.append(response.json())
+                for result in response.json():
+                  results.append(result)
         else:
-            response = requests.get(f"{LINK}api/v1/users")
+            response = requests.get(f"{LINK}team-11-api/api/v1/users")
             print(response.url)  # Shows the full URL with query parameters
             print(response.json())
-            results.append(response.json())
+            results=response.json()
     else:
         #mockup from here, VERY low tech (Conner, don't judge me!)
         if len(usertypes)!=0:
