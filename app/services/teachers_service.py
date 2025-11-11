@@ -33,3 +33,19 @@ def get_teachers(db: Session, teacher_external_id: str):
 
 def create_teachers(db: Session, teacher: TeacherCreate):
   return teachers_crud.create(db, teacher)
+
+def get_teacher_courses(db: Session, teacher_id: str):
+    """
+    Gibt alle Kursinstanzen eines Teachers anhand der Teacher-ID zurück.
+    """
+    stmt = select(Teachers).where(Teachers.external_id == teacher_id)
+    try:
+        teacher = db.scalars(stmt).one()
+        # Kurse direkt aus Relationship ziehen
+        return TeacherReadPlus(
+            **teacher.__dict__,
+            courses=teacher.courses
+        )
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail="Teacher not found")
+
