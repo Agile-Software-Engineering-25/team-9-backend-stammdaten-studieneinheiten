@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-
+from app.schemas.students import CourseReadShallow
 
 class TeacherBase(BaseModel):
   """Test Description"""
@@ -15,5 +15,5 @@ class TeacherRead(TeacherBase):
   model_config = ConfigDict(from_attributes=True)
 
 class TeacherReadPlus(TeacherBase):
-  course_ids: list[int]
-  model_config = ConfigDict(from_attributes=True)
+    courses: list[CourseReadShallow]
+    model_config = ConfigDict(from_attributes=True)

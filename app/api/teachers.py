@@ -23,3 +23,7 @@ def create_teacher(
   teacher: TeacherCreate, db: Session = Depends(get_db)
 ):
   return teachers_service.create_teachers(db, teacher)
+
+@router.get("/{teacher_external_id}/courses", response_model=TeacherReadPlus)
+def get_course(teacher_external_id: str, db: Session = Depends(get_db)):
+  return teachers_service.get_teacher_courses(db, teacher_external_id)
