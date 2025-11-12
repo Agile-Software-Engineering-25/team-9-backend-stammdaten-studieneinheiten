@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
+from sqlalchemy import event
 from app.core.db import Base, get_db
 from app.main import fastapi_app as app
 from app.models.course_template import CourseTemplate
@@ -21,9 +22,25 @@ engine = create_engine(
 TestingSessionLocal = sessionmaker(bind=engine, autoflush=False)
 
 
+@event.listens_for(engine, "connect")
+def set_sqlite_pragma(dbapi_conn, connection_record):
+  cursor = dbapi_conn.cursor()
+  cursor.execute("PRAGMA foreign_keys=ON")
+  cursor.close()
+
+
 # Dependency override
 def override_get_db():
   db = TestingSessionLocal()
+  try:
+    yield db
+  finally:
+    db.close()
+
+
+@pytest.fixture
+def db_session():
+  db = next(override_get_db())
   try:
     yield db
   finally:
