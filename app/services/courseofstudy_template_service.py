@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from app.models.module_templates import ModuleTemplate
+from app.services.course_of_study_service import list_course_of_study
 from app.models.courseofstudy_templates import CourseOfStudyTemplate
 from app.repositories.courseofstudy_template_repository import (
   courseofstudy_template_crud,
@@ -61,3 +62,25 @@ def create_courseofstudy_template(
   db.commit()
   db.refresh(obj)
   return obj
+
+
+def delete_courseofstudy_template(db: Session, template_id: int):
+  template = courseofstudy_template_crud.get(db, template_id)
+  if not template:
+    raise HTTPException(
+      status_code=404,
+      detail=f"Course of Study Template with the following ID does not exist: {template_id}",
+    )
+
+  # Check if no instance used
+  instances = [
+    cos for cos in list_course_of_study(db) if cos.template.id == template_id
+  ]
+  if len(instances) != 0:
+    raise HTTPException(
+      status_code=400,
+      detail=f"Course of Study template with ID {template_id} is used in {len(instances)} Course of Study instances. Templates may not be deleted with existing instances.",
+    )
+
+  # Delete
+  courseofstudy_template_crud.delete(db, template_id)
