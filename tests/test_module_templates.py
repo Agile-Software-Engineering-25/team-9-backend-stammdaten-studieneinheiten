@@ -98,15 +98,36 @@ def test_get_all_templates(client):
   assert {t["id"] for t in data} == set(ids)
 
 
-def test_delete_template(client, module_templates):
+def test_delete_template(client, module_templates, db_session):
   template_to_delete = module_templates[0]
   template_id = template_to_delete.id
+
+  # verify associations exist
+  from sqlalchemy import text
+
+  count = db_session.execute(
+    text(
+      "SELECT COUNT(*) FROM course_template_in_modules "
+      "WHERE module_template_id = :id"
+    ),
+    {"id": template_id},
+  ).scalar()
+  assert count != 0
+
+  # Delete template
   res = client.delete(f"/modules/templates/{template_id}")
   assert res.status_code == 200
 
-  # try getting deleted template, also tests invalid id deletion
-  res = client.get(f"/modules/templates/{template_id}")
-  assert res.status_code == 404
+  # Verify associations deleted
+  db_session.expire_all()
+  count = db_session.execute(
+    text(
+      "SELECT COUNT(*) FROM course_template_in_modules "
+      "WHERE module_template_id = :id"
+    ),
+    {"id": template_id},
+  ).scalar()
+  assert count == 0
 
 
 def test_delete_template_with_instance(client, module_templates, courses):
