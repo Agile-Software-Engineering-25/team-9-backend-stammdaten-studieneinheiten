@@ -1,8 +1,16 @@
-from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table, Boolean
+from sqlalchemy import (
+  Column,
+  String,
+  Integer,
+  Float,
+  ForeignKey,
+  Table,
+  Boolean,
+)
 from sqlalchemy.orm import relationship
 from app.core.db import Base, BaseIdMixin
 from app.models.association_tables import (
-  module_templates_in_courseofstudy_templates_table  
+  module_templates_in_courseofstudy_templates_table,
 )
 
 
@@ -18,4 +26,5 @@ class CourseOfStudyTemplate(Base, BaseIdMixin):
     "ModuleTemplate",
     secondary=module_templates_in_courseofstudy_templates_table,
     back_populates="courseofstudy_templates",
+    passive_deletes=True,
   )

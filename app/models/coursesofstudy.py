@@ -1,9 +1,15 @@
-from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table, DateTime
+from sqlalchemy import (
+  Column,
+  String,
+  Integer,
+  Float,
+  ForeignKey,
+  Table,
+  DateTime,
+)
 from sqlalchemy.orm import relationship
 from app.core.db import Base, BaseIdMixin
-from app.models.association_tables import (
-  modules_in_courseofstudy_table
-)
+from app.models.association_tables import modules_in_courseofstudy_table
 
 
 class CoursesOfStudy(Base, BaseIdMixin):
@@ -15,13 +21,14 @@ class CoursesOfStudy(Base, BaseIdMixin):
   cohort = Column(String, nullable=False)
 
   template_id = Column(
-        Integer, ForeignKey("CourseOfStudyTemplates.id"), nullable=False
-    )
+    Integer, ForeignKey("CourseOfStudyTemplates.id"), nullable=False
+  )
 
   template = relationship("CourseOfStudyTemplate", backref="Courses")
 
   modules = relationship(
-      "Module",
-      secondary=modules_in_courseofstudy_table,
-      back_populates="courseofstudy",
+    "Module",
+    secondary=modules_in_courseofstudy_table,
+    back_populates="courseofstudy",
+    passive_deletes=True,
   )

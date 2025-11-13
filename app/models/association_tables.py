@@ -28,11 +28,21 @@ module_templates_in_courseofstudy_templates_table = Table(
   "module_template_in_courseofstudy_templates",
   Base.metadata,
   Column(
-    "module_template_id", ForeignKey("ModuleTemplates.id"), primary_key=True
+    "module_template_id",
+    ForeignKey(
+      "ModuleTemplates.id",
+      ondelete="CASCADE",
+      name="module_template_in_courseofstudy_templates_module_template_id_fkey",
+    ),
+    primary_key=True,
   ),
   Column(
     "courseofstudy_template_id",
-    ForeignKey("CourseOfStudyTemplates.id"),
+    ForeignKey(
+      "CourseOfStudyTemplates.id",
+      ondelete="CASCADE",
+      name="module_template_in_courseofstudy_templates_courseofstudy_template_id_fkey",
+    ),
     primary_key=True,
   ),
 )
