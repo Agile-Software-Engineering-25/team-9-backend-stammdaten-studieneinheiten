@@ -8,8 +8,6 @@ from fastapi import HTTPException
 from sqlalchemy import select
 
 
-
-
 # In this case, this file only contains wrappers and could be optional.
 # For more commplex models, there might be more business logic
 # required. This business logic should go here.
@@ -23,11 +21,26 @@ def get_course_of_study(db: Session, template_id: int):
   return course_of_study_crud.get(db, template_id)
 
 
+def delete_course_of_study(db: Session, cos_id: int):
+  cos = db.query(CoursesOfStudy).filter(
+    CoursesOfStudy.id == cos_id,
+    CoursesOfStudy.startDate <= date.today(),
+    CoursesOfStudy.endDate >= date.today(),
+  )
+  if cos:
+    raise HTTPException(
+      status_code=409, detail="Course of Study is currently running"
+    )
+  return course_of_study_crud.delete(db, cos_id)
+
+
 def create_course_of_study(db: Session, payload: CourseofStudyCreate):
   if hasattr(payload, "model_dump"):
     data = payload.model_dump(exclude={"module_ids"}, exclude_unset=True)
   else:
-    data = payload.dict(exclude={"module_ids"}, exclude_unset=True)  # Pydantic v1 fallback
+    data = payload.dict(
+      exclude={"module_ids"}, exclude_unset=True
+    )  # Pydantic v1 fallback
 
   if not payload.module_ids:
     raise HTTPException(
@@ -35,30 +48,24 @@ def create_course_of_study(db: Session, payload: CourseofStudyCreate):
     )
 
   # fetch the CourseTemplate rows
-  stmt = select(Module).where(
-    Module.id.in_(payload.module_ids)
-  )
+  stmt = select(Module).where(Module.id.in_(payload.module_ids))
   modules = list(db.scalars(stmt))
 
   # optional: ensure all IDs existed
   if len(modules) != len(set(payload.module_ids)):
-    missing = set(payload.module_ids) - {
-      ct.id for ct in modules
-    }
+    missing = set(payload.module_ids) - {ct.id for ct in modules}
     raise HTTPException(
       status_code=400, detail=f"Unknown module ids: {sorted(missing)}"
     )
-  
-#check module template________________________________________________________________
+
+  # check module template________________________________________________________________
 
   if not payload.template_id:
-    raise HTTPException(
-      status_code=400, detail="A template is required"
-    )
+    raise HTTPException(status_code=400, detail="A template is required")
 
   # fetch the CourseTemplate rows
   stmt = select(CourseOfStudyTemplate).where(
-    CourseOfStudyTemplate.id==payload.template_id
+    CourseOfStudyTemplate.id == payload.template_id
   )
   template = db.scalars(stmt).one()
 
