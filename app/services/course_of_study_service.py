@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from datetime import date
+from datetime import date, datetime
 from app.repositories.course_of_study_repository import course_of_study_crud
 from app.schemas.coursesofstudy import CourseofStudyCreate
 from app.models.module import Module
@@ -23,14 +23,24 @@ def get_course_of_study(db: Session, template_id: int):
 
 
 def delete_course_of_study(db: Session, cos_id: int):
-  cos = db.query(CoursesOfStudy).filter(
-    CoursesOfStudy.id == cos_id,
-    CoursesOfStudy.startDate <= date.today(),
-    CoursesOfStudy.endDate >= date.today(),
+  today_start = datetime.now().replace(
+    hour=0, minute=0, second=0, microsecond=0
   )
+  today_end = today_start.replace(hour=23, minute=59, second=59, microsecond=0)
+
+  cos = (
+    db.query(CoursesOfStudy)
+    .filter(
+      CoursesOfStudy.id == cos_id,
+      CoursesOfStudy.startDate <= today_end,
+      CoursesOfStudy.endDate >= today_start,
+    )
+    .first()
+  )
+
   if cos:
     raise HTTPException(
-      status_code=409, detail="Course of Study is current running"
+      status_code=409, detail="Course of Study is currently running"
     )
   return course_of_study_crud.delete(db, cos_id)
 
