@@ -5,7 +5,7 @@ def test_create_courseofstudy_template(client, module_templates):
       "name": "BIN-T",
       "degree_type": "BSc",
       "planned_semesters": 6,
-      "part_time":True,
+      "part_time": True,
       "module_template_ids": [mt.id for mt in module_templates[0:3]],
     },
   )
@@ -50,7 +50,7 @@ def test_create_courseofstudy_no_modules(client):
       "degree_type": "professional idiot",
       "planned_semesters": 69,
       "module_template_ids": [],
-      "part_time":False
+      "part_time": False,
     },
   )
   assert response.status_code == 400
@@ -62,3 +62,35 @@ def test_get_all_courseofstudy_templates(client, courseofstudy_templates):
   data = response.json()
   assert len(data) == len(courseofstudy_templates)
   assert {t["id"] for t in data} == {t.id for t in courseofstudy_templates}
+
+
+def test_delete_template(client, courseofstudy_templates, db_session):
+  template_to_delete = courseofstudy_templates[0]
+  template_id = template_to_delete.id
+
+  # verify associations exist
+  from sqlalchemy import text
+
+  count = db_session.execute(
+    text(
+      "SELECT COUNT(*) FROM module_template_in_courseofstudy_templates "
+      "WHERE courseofstudy_template_id = :id"
+    ),
+    {"id": template_id},
+  ).scalar()
+  assert count != 0
+
+  # Delete template
+  res = client.delete(f"/courseofstudies/templates/{template_id}")
+  assert res.status_code == 200
+
+  # Verify associations deleted
+  db_session.expire_all()
+  count = db_session.execute(
+    text(
+      "SELECT COUNT(*) FROM module_template_in_courseofstudy_templates "
+      "WHERE courseofstudy_template_id = :id"
+    ),
+    {"id": template_id},
+  ).scalar()
+  assert count == 0

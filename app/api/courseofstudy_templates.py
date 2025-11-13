@@ -37,3 +37,10 @@ def create_courseofstudy_templates(
   return courseofstudy_template_service.create_courseofstudy_template(
     db, courseofstudy_template
   )
+
+
+@router.delete("/{cos_temp_id}")
+def delete_courseofstudy_template(
+  cos_temp_id: int, db: Session = Depends(get_db)
+):
+  courseofstudy_template_service.delete_courseofstudy_template(db, cos_temp_id)
