@@ -47,9 +47,10 @@ else:
 
 @event.listens_for(engine, "connect")
 def set_sqlite_pragma(dbapi_conn, connection_record):
-  cursor = dbapi_conn.cursor()
-  cursor.execute("PRAGMA foreign_keys=ON")
-  cursor.close()
+  if not IS_DEPLOYED:
+    cursor = dbapi_conn.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
 
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False)
