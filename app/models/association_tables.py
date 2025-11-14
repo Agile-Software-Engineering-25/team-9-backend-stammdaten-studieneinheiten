@@ -81,6 +81,22 @@ courses_in_module_table = Table(
 modules_in_courseofstudy_table = Table(
   "modules_in_coursesofstudy",
   Base.metadata,
-  Column("courseofstudy_id", ForeignKey("CoursesOfStudy.id"), primary_key=True),
-  Column("module_id", ForeignKey("Module.id"), primary_key=True),
+  Column(
+    "courseofstudy_id",
+    ForeignKey(
+      "CoursesOfStudy.id",
+      ondelete="CASCADE",
+      name="modules_in_coursesofstudy_courseofstudy_id_fkey",
+    ),
+    primary_key=True,
+  ),
+  Column(
+    "module_id",
+    ForeignKey(
+      "Module.id",
+      ondelete="CASCADE",
+      name="modules_in_coursesofstudy_module_id_fkey",
+    ),
+    primary_key=True,
+  ),
 )

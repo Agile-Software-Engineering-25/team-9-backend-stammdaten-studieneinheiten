@@ -43,10 +43,12 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(
       ["courseofstudy_id"],
       ["CoursesOfStudy.id"],
+      name="modules_in_coursesofstudy_courseofstudy_id_fkey",
     ),
     sa.ForeignKeyConstraint(
       ["module_id"],
       ["Module.id"],
+      name="modules_in_coursesofstudy_module_id_fkey",
     ),
     sa.PrimaryKeyConstraint("courseofstudy_id", "module_id"),
   )
