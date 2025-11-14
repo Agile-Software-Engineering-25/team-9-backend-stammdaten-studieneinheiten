@@ -32,7 +32,7 @@ module_templates_in_courseofstudy_templates_table = Table(
     ForeignKey(
       "ModuleTemplates.id",
       ondelete="CASCADE",
-      name="module_template_in_courseofstudy_templates_module_template_id_fkey",
+      name="module_template_in_courseofstudy_templa_module_template_id_fkey",
     ),
     primary_key=True,
   ),
@@ -41,7 +41,7 @@ module_templates_in_courseofstudy_templates_table = Table(
     ForeignKey(
       "CourseOfStudyTemplates.id",
       ondelete="CASCADE",
-      name="module_template_in_courseofstudy_templates_courseofstudy_template_id_fkey",
+      name="module_template_in_courseofstudy_courseofstudy_template_id_fkey",
     ),
     primary_key=True,
   ),

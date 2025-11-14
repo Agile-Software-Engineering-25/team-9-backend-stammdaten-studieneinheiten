@@ -107,12 +107,12 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(
       ["courseofstudy_template_id"],
       ["CourseOfStudyTemplates.id"],
-      name="module_template_in_courseofstudy_templates_courseofstudy_template_id_fkey",
+      name="module_template_in_courseofstudy_courseofstudy_template_id_fkey",
     ),
     sa.ForeignKeyConstraint(
       ["module_template_id"],
       ["ModuleTemplates.id"],
-      name="module_template_in_courseofstudy_templates_module_template_id_fkey",
+      name="module_template_in_courseofstudy_templa_module_template_id_fkey",
     ),
     sa.PrimaryKeyConstraint("module_template_id", "courseofstudy_template_id"),
   )

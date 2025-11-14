@@ -26,22 +26,22 @@ def upgrade() -> None:
     "module_template_in_courseofstudy_templates", schema=None
   ) as batch_op:
     batch_op.drop_constraint(
-      "module_template_in_courseofstudy_templates_module_template_id_fkey",
+      "module_template_in_courseofstudy_templa_module_template_id_fkey",
       type_="foreignkey",
     )
     batch_op.drop_constraint(
-      "module_template_in_courseofstudy_templates_courseofstudy_template_id_fkey",
+      "module_template_in_courseofstudy_courseofstudy_template_id_fkey",
       type_="foreignkey",
     )
     batch_op.create_foreign_key(
-      "module_template_in_courseofstudy_templates_module_template_id_fkey",
+      "module_template_in_courseofstudy_templa_module_template_id_fkey",
       "ModuleTemplates",
       ["module_template_id"],
       ["id"],
       ondelete="CASCADE",
     )
     batch_op.create_foreign_key(
-      "module_template_in_courseofstudy_templates_courseofstudy_template_id_fkey",
+      "module_template_in_courseofstudy_courseofstudy_template_id_fkey",
       "CourseOfStudyTemplates",
       ["courseofstudy_template_id"],
       ["id"],
@@ -58,11 +58,11 @@ def downgrade() -> None:
     "module_template_in_courseofstudy_templates", schema=None
   ) as batch_op:
     batch_op.drop_constraint(
-      "module_template_in_courseofstudy_templates_courseofstudy_template_id_fkey",
+      "module_template_in_courseofstudy_courseofstudy_template_id_fkey",
       type_="foreignkey",
     )
     batch_op.drop_constraint(
-      "module_template_in_courseofstudy_templates_module_template_id_fkey",
+      "module_template_in_courseofstudy_templa_module_template_id_fkey",
       type_="foreignkey",
     )
     batch_op.create_foreign_key(
